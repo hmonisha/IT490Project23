@@ -1,5 +1,15 @@
+#!/usr/bin/php
 <?php
-$results = shell_exec('GET http://api.football-data.org/alpha/soccerseasons/354');
+if($argc>1) {
+	$requestString = 'GET https://api.agify.io/?name=' . $argv[1];
+}
+else {
+	$requestString = 'GET https://api.agify.io/?name=bella';
+}
+print $requestString;
+print "\n\n";
+print $argv[1];
+$results = shell_exec($requestString);
 $arrayCode = json_decode($results);
 var_dump($arrayCode);
 ?>
