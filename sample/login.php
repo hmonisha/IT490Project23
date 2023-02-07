@@ -17,6 +17,7 @@ switch ($request["type"])
 {
 	case "login":
 		$response = "login, yeah we can do that";
+		echo $reponse;
         $request = array();
         $request['type'] = "Login";
         $request['username'] = $POST['username'];

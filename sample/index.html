@@ -8,9 +8,14 @@
         //	document.getElementById("textResponse").innerHTML = response+"<p>";	
             document.getElementById("textResponse").innerHTML = "response: "+text+"<p>";
         }
-        
-        function SendLoginRequest(username,password)
+	    function tempSendLogin() {
+				SendLoginRequest();
+			}
+        function SendLoginRequest()
         {
+			    var username = document.getElementById('username').value;
+			    var password = document.getElementById('password').value;
+			    alert("Username" + username + " Password " + password);
             var request = new XMLHttpRequest();
             request.open("POST","login.php",true);
             request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -36,19 +41,19 @@
         <div class="container">
 
 
-            <div class="head">
+            <div class="head" id="testResponse">
                 Login Page
             </div>
 
         </br>
-         <form>
+         <form method="POST">
             <div class="main">
                
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" placeholder="Example: john12345" class="longinput">
                 <br>
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" placeholder="" class="longinput">
+                <input type="password" name="password" id="password"target="_blank" placeholder="" class="longinput">
                 <br>
             </div>
 
@@ -56,7 +61,7 @@
 
             <div class ="right">
                     
-                <input type="submit" value="Submit" onclick="SendLoginRequest">
+                <input type="submit" value="Submit" onclick="return tempSendLogin()">
             </div>
          </form>
 
@@ -66,20 +71,4 @@
 
         </div>
     </body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </html>
