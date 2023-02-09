@@ -24,7 +24,7 @@ switch ($request["type"])
         	$request['username'] = $POST['username'];
         	$request['password'] = $POST['password'];
         	$request['message'] = "test WILL BE A KEY";
-        	$response = $client->send_request($request);
+        	#$response = $client->send_request($request);
         
 	break;
 }
