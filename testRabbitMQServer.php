@@ -51,7 +51,7 @@ function requestProcessor($request)
   switch (strtolower($request['type']))
   {
   case "login":
-	  $pwd = hash('sha256',$request['[passwprd']);
+	  $pwd = hash('sha256',$request['password']);
 	  $login = doLogin($request['username'],$pwd);
 	  if($login){
 	 	return array("returnCode" => '202', 'message'=>"Server received request and approved the login request.");
