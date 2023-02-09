@@ -21,9 +21,10 @@
             request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
             request.onreadystatechange= function ()
             {
-                
+               alert(this.readyState + " " + this.status); 
                 if ((this.readyState == 4)&&(this.status == 200))
                 {
+	            alert("Handling login : " + this.responseText);
                     HandleLoginResponse(this.responseText);
                 }		
             }
