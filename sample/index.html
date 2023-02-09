@@ -4,8 +4,10 @@
 
         function HandleLoginResponse(response)
         {
-			    alert(response);
+			  
             var text = JSON.parse(response);
+			    alert(text.message);
+
         //	document.getElementById("textResponse").innerHTML = response+"<p>";	
             document.getElementById("textResponse").innerHTML = "response: "+text+"<p>";
         }
@@ -16,16 +18,16 @@
         {
 			    var username = document.getElementById('username').value;
 			    var password = document.getElementById('password').value;
-			    alert("Username" + username + " Password " + password);
+			    
             var request = new XMLHttpRequest();
             request.open("POST","login.php",true);
             request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
             request.onreadystatechange= function ()
             {
-               alert(this.readyState + " " + this.status); 
+               
                 if ((this.readyState == 4)&&(this.status == 200))
                 {
-	            alert("Calling function with : " + this.responseText);
+	            
                     HandleLoginResponse(this.responseText);
                 }		
 				if(this.readyState == 4) {
