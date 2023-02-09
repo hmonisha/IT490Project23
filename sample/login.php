@@ -18,34 +18,18 @@ switch ($request["type"])
 	case "login":
 		$response = "login, yeah we can do that";
 		echo $reponse;
-        $request = array();
-        $request['type'] = "Login";
-        $request['username'] = $POST['username'];
-        $request['password'] = $POST['password'];
-        $request['message'] = $msg;
-        $response = $client->send_request($request);
+		$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+        	$request = array();
+        	$request['type'] = "Login";
+        	$request['username'] = $POST['username'];
+        	$request['password'] = $POST['password'];
+        	$request['message'] = "test WILL BE A KEY";
+        	$response = $client->send_request($request);
         
 	break;
 }
 echo json_encode($response);
 exit(0);
-
-
-
-
-
-
-
-
-$client = new rabbitMQClient("testRabbitMQ.ini","testServer");
-if (isset($argv[1]))
-{
-  $msg = $argv[1];
-}
-else
-{
-  $msg = "test message";
-}
 
 
 
