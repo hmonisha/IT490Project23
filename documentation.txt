@@ -1,0 +1,20 @@
+-Using google books api for a book recommendation site
+
+-We'll be using bootstrap for the rating steup
+
+-Get New york Times best seller reviews for book recommendations
+
+-Users have to be login to write a review
+
+-Forum will be sperated from the star rating
+
+-Get read books added to a library
+
+-Setup a logging library 
+
+-User has to create a profile 
+
+-Website should get a link from google books that send users to buy the book on a different site 
+
+-Get a website that has a description of the book and a picture 
+
