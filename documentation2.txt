@@ -1,0 +1,20 @@
+- 2/16/23
+
+-discussed about specifc about our personal deliverables
+
+-we started doing a bit of research about google books api
+
+-we gave ourselves roles on which part we need to do research 
+
+
+-2/21/23
+
+-we have set up specific goals for ourselves and due dates
+
+-we discussed about the plan with one of our team member who was behind
+
+-we will continue to do more research about our tasks we were given
+
+-next tuesday we want to start testing our parts together 
+
+-hopefully by next week will get a fully functioning backend and frontend that connects with the api 
