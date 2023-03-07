@@ -62,7 +62,7 @@ function bookInfoToJsonArray($bookInfo){
 $books = json_decode($bookInfo);
 
 $output = array();
-;
+
 foreach($books->items as $book){
 		$volume = $book->volumeInfo;
 		$sale = $book->saleInfo;
@@ -78,7 +78,6 @@ foreach($books->items as $book){
 		$category = $volume->categories;
 		$isAvailable = $sale->saleability=='FOR_SALE'?'True':'False';
 		try{
-			var_dump($sale);
 			$price = $sale->listPrice->amount;
 		} catch(Exception $e) {
 			$price = 0;
@@ -115,8 +114,10 @@ foreach($books->items as $book){
 		'printType' => $printType,
 		'category' => $category,
 		'isAvailable' => $isAvailable==NULL?"False":$isAvailable,
-		'price' => $price==NULL?0:$price
+		'price' => $price==NULL?0:$price,
+		'link' => $link
 		);
+		var_dump($bookJsonArr);
 		array_push($output,$bookJsonArr);
 }
 return $output;
