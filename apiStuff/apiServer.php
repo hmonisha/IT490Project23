@@ -1,7 +1,10 @@
 <?php
 
-function getBuyLink($bookName){
+	require_once('path.inc');
+	require_once('get_host_info.inc');
+	require_once('rabbitMQLib.inc');
 
+function getBuyLink($bookName){
 
 	
 
@@ -160,8 +163,7 @@ function getBooksAsTopBooks($topBooks){
 	
 	
 	}
-
-	var_dump($bookReturns);
+	return $bookReturns;
 }
 
 
@@ -174,3 +176,67 @@ $inputVariable = "Heroes of Olympus";
 var_dump(bookInfoToJsonArray(getBookInfo($inputVariable)));
 //
 //getBooksAsTopBooks(getTopBooks("hardcover-fiction"));
+
+
+
+
+//////RABBIT STUFF
+
+
+function requestProcessor($request)
+{
+  echo "received request".PHP_EOL;
+  var_dump($request);
+  if(!isset($request['type']))
+  {
+    return "ERROR: unsupported message type";
+  }
+  switch (strtolower($request['type']))
+  {
+  case "bookSearch":
+		  try{
+		  $searchQuery = $request['query'];
+		  } catch(Exception $e) {
+			  //throw exception into rabbit
+		  }
+	  $books = getBookInfo($searchQuery);
+	  if($books.length > 0){
+	 	return array("returnCode" => '202', 'message'=>"Server received request and return data.", "data" => bookInfoToJsonArray($books));
+
+	  }
+	  else {
+		  return array("returnCode" => '401', 'message'=>"Server received request and failed to find any books.", "data" => "");
+
+	  }
+	  break;
+    case "topBooks":
+		  try{
+		  $searchQuery = $request['query'];
+		  } catch(Exception $e) {
+			  //throw exception into rabbit
+		  }
+		  $books = getTopBooks($searchQuery);
+		  if($books.length > 0){
+	 	return array("returnCode" => '202', 'message'=>"Server received request and return data.", "data" => bookInfoToJsonArray($books));
+
+	  }
+	  else {
+		  //
+		  return array("returnCode" => '401', 'message'=>"Server received request and failed to find any books.", "data" => "");
+
+	  }
+  } default {
+	  return array("returnCode" => '401', 'message'=>"Server received request without a valid type.", "data"=>"");
+  }
+}
+
+
+
+$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+
+echo "testRabbitMQServer BEGIN".PHP_EOL;
+while(true){
+$server->process_requests('requestProcessor');
+}
+
+echo "testRabbitMQServer END".PHP_EOL;
