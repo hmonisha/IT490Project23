@@ -173,7 +173,7 @@ function getBooksAsTopBooks($topBooks){
 
 $inputVariable = "Heroes of Olympus";
 
-var_dump(bookInfoToJsonArray(getBookInfo($inputVariable)));
+//var_dump(bookInfoToJsonArray(getBookInfo($inputVariable)));
 //
 //getBooksAsTopBooks(getTopBooks("hardcover-fiction"));
 
@@ -193,15 +193,17 @@ function requestProcessor($request)
   }
   switch (strtolower($request['type']))
   {
-  case "bookSearch":
+  case "booksearch":
 		  try{
 		  $searchQuery = $request['query'];
 		  } catch(Exception $e) {
 			  //throw exception into rabbit
 		  }
 	  $books = getBookInfo($searchQuery);
-	  if($books.length > 0){
-	 	return array("returnCode" => '202', 'message'=>"Server received request and return data.", "data" => bookInfoToJsonArray($books));
+		  if(true){
+			  $bookJson = bookInfoToJsonArray($books);
+			  echo "Got Json : Sending request";
+	 	return array("returnCode" => '202', 'message'=>"Server received request and return data.", "data" => $bookJson);
 
 	  }
 	  else {
@@ -209,14 +211,14 @@ function requestProcessor($request)
 
 	  }
 	  break;
-    case "topBooks":
+    case "topbooks":
 		  try{
 		  $searchQuery = $request['query'];
 		  } catch(Exception $e) {
 			  //throw exception into rabbit
 		  }
 		  $books = getTopBooks($searchQuery);
-		  if($books.length > 0){
+		  if(true){
 	 	return array("returnCode" => '202', 'message'=>"Server received request and return data.", "data" => bookInfoToJsonArray($books));
 
 	  }
@@ -225,7 +227,7 @@ function requestProcessor($request)
 		  return array("returnCode" => '401', 'message'=>"Server received request and failed to find any books.", "data" => "");
 
 	  }
-  } default {
+  
 	  return array("returnCode" => '401', 'message'=>"Server received request without a valid type.", "data"=>"");
   }
 }
@@ -235,8 +237,8 @@ function requestProcessor($request)
 $server = new rabbitMQServer("testRabbitMQ.ini","testServer");
 
 echo "testRabbitMQServer BEGIN".PHP_EOL;
-while(true){
+
 $server->process_requests('requestProcessor');
-}
+
 
 echo "testRabbitMQServer END".PHP_EOL;
