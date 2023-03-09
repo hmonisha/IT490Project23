@@ -40,63 +40,156 @@ function doLogin($username,$password)
     //return false if not valid
 }
 
-function getForum()
-{
 
- $post_id = filter_input(INPUT_POST, 'post_id', FILTER_SANITIZE_NUMBER_INT);
- $topic_id = filter_input(INPUT_POST, 'topic_id', FILTER_SANITIZE_NUMBER_INT);
- $post_content = filter_input(INPUT_POST, 'post_content', FILTER_SANITIZE_STRING);
- $post_owner = filter_input(INPUT_POST, 'post_owner', FILTER_SANITIZE_STRING);
+function addUser($username,$passhash){
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("INSERT INTO userLogin (username, passhash) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $passhash);
+        $stmt->execute();
 
 
- 	try{
- 
-		$dbh = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbuser, $dbPass);
-		$dbh =setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		$stmt = $dbh->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_owner) VALUES (:post_id, :topic_id, :post_content, :post_owner)");		$stmt = bindParam(':post_id', $post_id);
-		$stmt = bindParam(':topic_id', $topic_id);
-		$stmt = bindParam(':post_content', $post_content);
-		$stmt = bindParam(':post_owner', $post_owner);	
- 		
-		$stmt->execute();
-		echo "Message posted successfully";
-	   } catch(PDOException $e) {
-		   echo "Error posting message: " . $e->getMessage();
- 		}
- 
- 		$dbh = null;
+        echo "User added successfully";
+        $stmt->close();
+        $conn->close();
 
 
 }
 
 
-function getReviews()
-{
 
-	$bookName = filter_input(INPUT_POST, 'bookName', FILTER_SANITIZE_NUMBER_STRING);
- $reviewerName = filter_input(INPUT_POST, 'reviewerName', FILTER_SANITIZE_NUMBER_STRING);
- $rating = filter_input(INPUT_POST, 'rating', FILTER_SANITIZE_INT);
- $review_text = filter_input(INPUT_POST, 'review_text', FILTER_SANITIZE_STRING);
+function getPassHash($username){
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+	if ($conn->connect_error){
+		die("Connection failed: " . $conn->connect_error);
+	}
+
+	$sql = "SELECT username FROM userLogin WHERE username=$username";
+	$result = $conn->query($sql);
+
+	if ($result->num_rows > 0){
+		while($row = $result->fetch_assoc()){
+		 echo "username: " . $row["username"]. "<br>";
+
+		} else {
+
+		  echo "0 results";
+		}
+
+		$conn->close();
+	
 
 
-        try{
+}
 
-                $dbh = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbuser, $dbPass);
-                $dbh =setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $stmt = $dbh->prepare("INSERT INTO book_reviews (bookName, reviewerName, rating, review_text) VALUES (:bookName, :reviewerName, :rating, :review_text)");               $stmt = bindParam(':bookName', $bookName);
-                $stmt = bindParam(':reviewerName', $reviewerName);
-                $stmt = bindParam(':rating', $rating);
-                $stmt = bindParam(':review_text', $review_text);
+function addBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price){
 
-                $stmt->execute();
-                echo "Review posted successfully";
-           } catch(PDOException $e) {
-                   echo "Error posting review: " . $e->getMessage();
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+	if ($conn->connect_error){
+	die("Connection failed: " . $conn->connect_error);
+	}
+
+	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("ssisbisissssd", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price);
+	$stmt->execute();
+
+
+
+	echo "Book added successfully";
+	$stmt->close();
+	$conn->close();
+
+
+
+
+}
+
+
+function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price){
+
+$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price FROM books WHERE bookname = $bookName";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                 echo "bookName: " . $row["bookName"]. "publishedBy: " . $row["publishedBy"]. "publishedDate: " . $row["publishedDate"]. "description: " . $row["description"]. "image: " . $row["image"]. "pageCount: " . $row["pageCount"]. "authors: " . $row["authors"]. "id: " . $row["id"]. "language: " . $row["language"]. "publishedCountry: " . $row["publishedCountry"]. "printType: " . $row["printType"]. "category: " . $row["category"]. "price: " . $row["price"]. "<br>";
+
+                } else {
+
+                  echo "0 results";
                 }
 
-                $dbh = null;
+                $conn->close();
+
+
+
+
+}
+
+
+
+function addForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+
+$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_date, post_owner) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisis", $post_id, $topic_id, $post_content, $post_date, $post_owner);
+        $stmt->execute();
+
+
+
+        echo "Forum added successfully";
+        $stmt->close();
+        $conn->close();
+
+
+
+}	
+
+
+function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+	
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT post_id, topic_id, post_content, post_date, post_owner FROM forum_posts WHERE post_id = $post_id";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                 echo "post_id: " . $row["post_id"]. "topic_id: " . $row["topic_id"]. "post_content: " . $row["post_content"]. "post_owner: " . $row["post_owner"]. "<br>";
+
+                } else {
+
+                  echo "0 results";
+                }
+
+                $conn->close();
+
+
 
 
 
@@ -105,9 +198,57 @@ function getReviews()
 
 
 
+function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("INSERT INTO book_reviews (id, bookName, reviewerName, reviewDate, rating, review_text) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issiis", $id, $bookName, $reviewerName, $reviewDate, $rating, $review_text);
+        $stmt->execute();
 
 
 
+        echo "Review added successfully";
+        $stmt->close();
+        $conn->close();
+
+
+
+
+
+}
+
+
+function getReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+
+$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT id, bookName, reviewerName, reviewDate, rating, review_text FROM book_reviews WHERE id = $id";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                 echo "id: " . $row["id"]. "bookName: " . $row["bookName"]. "reviewerName: " . $row["reviewerName"]. "reviewDate: " . $row["reviewDate"]. "rating: " . $row["rating"]. "review_text: " . $row["review_text"]. "<br>";
+
+                } else {
+
+                  echo "0 results";
+                }
+
+                $conn->close();
+
+
+
+
+}
 
 
 
@@ -145,37 +286,6 @@ function requestProcessor($request)
 $server = new rabbitMQServer("testRabbitMQ.ini","testServer");
 
 
-
-
-
-function getResquest($request){
-
-
-	$books = json_decode($bookInfo);
-
-	$output = array();
-
-
-	foreach($books->items as $book){
-		$volume = $book->volumeInfo;
-		$sale = $book->saleInfo;
-		$name = $volume->title;
-		$date = $volume->publisher;
-		$publisher = $volume->publisher;
-		$description = $volume->description;
-		$image = 'https://covers.openlibrary.org/b/isbn/'.$volume->industryIdentifiers[0]->identifier.'-L.jpg';
-		$isbn = $volume->industryIdentifiers[0]->identifier;
-		$lang = $volume->language;
-		$country = $sale->country;
-		$printType = $volume->printType;
-		$category = $volume->categories;
-		$isAvailable = $sale->saleability=='FOR_SALE'?'True':'False';
-
-	
-
-
-
-}
 
 
 
