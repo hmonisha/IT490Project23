@@ -8,8 +8,14 @@ require_once('../rabbitmqphp_example/rabbitMQLib.inc');
                 $fp = "events.log";
         $event = "[" . date('Y-m-d H:i:s') . "] Event'" . $event . "': " . $message . "\n";
         $fh = fopen($fp, "a");
-        fwrite($fh, $error);
+        fwrite($fh, $event);
         fclose($fh);
+        $client = new rabbitMQClient();
+        $req = array(
+            'type' => 'log',
+            'log_type' => $event,
+            'log_message' => $log_message);
+        $response = $client->send_request($req);
     }
 
 ?>
