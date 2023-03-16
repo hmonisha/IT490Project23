@@ -20,8 +20,6 @@ $client = new rabbitMQClient("testRabbitMQ.ini","testServer"); //CHANGE TO CORRE
 switch ($request["type"])
 {
     case "searchBooks":
-        $response = "login, yeah we can do that";
-        echo $response;
         $rabbitRequest = array();
         $rabbitRequest['type'] = "searchBooks";
         $rabbitRequest['searchQuery'] = $request['searchQuery'];
@@ -36,34 +34,42 @@ switch ($request["type"])
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "readBook":
+    case "getReadBook":
         $rabbitRequest = array();
-        $rabbitRequest['type'] = "readBook";
+        $rabbitRequest['type'] = "getReadBook";
         $rabbitRequest['username'] = $request['username'];
         $rabbitRequest['bookID'] = $request['bookID'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "getReviews":
+    case "setReadBook":
         $rabbitRequest = array();
-        $rabbitRequest['type'] = "getReviews";
+        $rabbitRequest['type'] = "setReadBook";
+        $rabbitRequest['username'] = $request['username'];
+        $rabbitRequest['bookID'] = $request['bookID'];
+        $rabbitRequest['message'] = "test WILL BE A KEY";
+        $response = $client->send_request($rabbitRequest);
+        break;
+    case "getDiscssionPosts":
+        $rabbitRequest = array();
+        $rabbitRequest['type'] = "getDiscussionPosts";
         $rabbitRequest['bookID'] = $request['bookID'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
     case "addReview":
         $rabbitRequest = array();
-        $rabbitRequest['type'] = "addReview";
-        $rabbitRequest['username'] = $request['addReview'];
+        $rabbitRequest['type'] = "addDiscussionPost";
+        $rabbitRequest['username'] = $request['addDiscussionPost'];
         $rabbitRequest['bookID'] = $request['bookID'];
-        $rabbitRequest['review'] = $request['review'];
+        $rabbitRequest['post'] = $request['post'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
     case "getRating":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "getRating";
-        $rabbitRequest['username'] = $request['getRating'];
+        $rabbitRequest['username'] = $request['username'];
         $rabbitRequest['bookID'] = $request['bookID'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
