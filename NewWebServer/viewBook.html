@@ -24,6 +24,7 @@
         const revObj = JSON.parse(reviewsText);
 
         let userHasRating = false;
+        let readBook = false;
 
         let book = obj.book;
         let rating = ratObj.rating;
@@ -38,6 +39,12 @@
         "<p>Description:"+book.Description+"</p>\n" +
         "<p>Price: "+book.price+" <a href="+book.buyLink+">Buy From Amazon</a></p>");
 
+        if(readBook){
+            document.write("You have read this book!<br><br>");
+        } else {
+            document.write("<input type=\"submit\" value=\"I have read this book\"><br><br>");
+        }
+
         if(!userHasRating){
             document.write('<br><label for="rating">Rating  </label><select name=""rating" id="rating">'+
                 '<option value="0.5">0.5</option>'+
@@ -49,19 +56,31 @@
                 '<option value="3.5">3.5</option>'+
                 '<option value="4.0">4.0</option>'+
                 '<option value="4.5">4.5</option>'+
-                '<option value="5.0">5.0</option></select><button action=""');
+                '<option value="5.0">5.0</option></select>'+
+                '<input type="submit" value="Save rating">'+
+            '<br><br><br>');
         } else {
             document.write("You rated this book " + rating + " out of 5.");
             document.write('<br>');
         }
+
+        document.write("<label for=\"review\">Add Discussion Post:</label>\n" +
+            "    <br>\n" +
+            "\n" +
+            "    <textarea id=\"review\" name=\"review\" rows=\"4\" cols=\"50\">\n" +
+            "    </textarea>\n" +
+            "    <input type=\"submit\" value=\"Submit Post\">"); //DO A FUNCTION
+
+
 
         for (let i = 0; i<reviews.length; i++) {
             document.write('<h5>'+reviews[i].username+'</h5>'+
             '<br>'+reviews[i].text+'<br><hr />');
 
         }
+    }
 
-        }
+
 
         writeBook("");
 </script>
