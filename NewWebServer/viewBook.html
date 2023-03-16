@@ -32,19 +32,19 @@
             '"pageCount":"207","Language":"English","Description":"This is a description that will hopefully be long enough to make this look kind of big and then maybe go multiple lines and truly test stuff. Yeah."}}';
 
         let ratingText = '{"rating" : 4.5}';
-        let reviewsText = '{"reviews":[{"username":"imapotato","text":"This book was horrible!"},{"username":"hiya","text":"This book was AMAZING!"},{"username":"IAmNotMe","text":"This book was decent"}]}'
+        let discussionsText = '{"reviews":[{"username":"imapotato","text":"This book was horrible!"},{"username":"hiya","text":"This book was AMAZING!"},{"username":"IAmNotMe","text":"This book was decent"}]}'
         const obj = JSON.parse(bookText);
         const ratObj = JSON.parse(ratingText);
-        const revObj = JSON.parse(reviewsText);
+        const discussionsObj = JSON.parse(discussionsText);
 
         let userHasRating = false;
         let readBook = false;
 
         let book = obj.book;
         let rating = ratObj.rating;
-        let reviews = revObj.reviews;
-        if (reviews == ""){
-        reviews = [];
+        let discussions = discussionsObj.reviews;
+        if (discussions == ""){
+        discussions = [];
     }
     document.write("<h1>" + book.bookName + "</h1>\n" +
         "<img src=\""+book.img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
@@ -87,9 +87,9 @@
 
 
 
-        for (let i = 0; i<reviews.length; i++) {
-            document.write('<h5>'+reviews[i].username+'</h5>'+
-            '<br>'+reviews[i].text+'<br><hr />');
+        for (let i = 0; i<discussions.length; i++) {
+            document.write('<h5>'+discussions[i].username+'</h5>'+
+            '<br>'+discussions[i].text+'<br><hr />');
 
         }
     }
