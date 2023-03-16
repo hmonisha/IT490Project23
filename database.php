@@ -250,7 +250,29 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 }
 
-
+function doRegister($username,$password)
+{
+        try{
+                global $dbUser, $dbPass, $serverName, $loginDBName;
+                $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
+                $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $loginStmt = $dbConn->prepare("INSERT INTO userLogin (username, passhash) VALUES (:username, :passhash) ");
+                $loginStmt->execute([':username' => $username], ':passhash' => $passHash);
+                if ($loginStmt->rowCount() == 1) {
+                    return true; 
+                } else {
+                    return false; 
+                }
+                return False;
+        }catch(PDOExcept $v) {
+                echo "Error: " . $e.getMessage();
+                return False;
+        }
+    // lookup username in databas
+    // check password
+    return false;
+    //return false if not valid
+}
 
 
 function requestProcessor($request)
@@ -262,11 +284,12 @@ function requestProcessor($request)
     return "ERROR: unsupported message type";
   }
   $login = "";
+  $register = "";
   switch (strtolower($request['type']))
   {
   case "login":
           $pwd = hash('sha256',$request['password']);
-          $login = doLogin($request['username'],$pwd);
+          $login = doRegister($request['username'],$pwd);
           if($login){
                 return array("returnCode" => '202', 'message'=>"Server received request and approved the login request.");
 
@@ -276,17 +299,24 @@ function requestProcessor($request)
 
           }
           break;
-    case "validate_session":
-      return doValidate($request['sessionId']);
+    case "registration";
+        $pwd = hash('sha256',$request['password']);
+        $register = doRegister($request['username'],$pwd);
+        if($register){
+            return array("returnCode" => '202', 'message'=>"Server received request and approved the user registration request.");
+
+        }
+        else {
+                return array("returnCode" => '401', 'message'=>"Server received request and denied the registration request.");
+
+        }
+        break;
   }
   $loginStr = $login ? 'True' : 'False';
   return array("returnCode" => '0', 'message'=>"Server received request and processed and replied with $loginStr");
 }
 
 $server = new rabbitMQServer("testRabbitMQ.ini","testServer");
-
-
-
 
 
 
