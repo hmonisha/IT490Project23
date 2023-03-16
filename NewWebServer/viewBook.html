@@ -9,8 +9,22 @@
     <a href="/home.html">Home</a>
 </nav>
 <script>
+    function get(name){
+        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+            return decodeURIComponent(name[1]);
+    }
+
+
+
     function writeBook(response) {
-        //dejsonify
+
+        let bookID = get("bookID");
+        if (bookID = null){
+            alert("Page will not function.");
+            window.location.replace("/home.html");
+        }
+        //send requests for data
+
         let bookText = '{ "book" : ' +
             '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
             '"authors":"Jacob Jones, Jones","publisher":"Jones Publishing","PublishDate":"03/16/2023","Categories":["Science Fiction", "Fantasy"],' +
@@ -79,10 +93,7 @@
 
         }
     }
-
-
-
-        writeBook("");
+        writeBook();
 </script>
 </body>
 </html>
