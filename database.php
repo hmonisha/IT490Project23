@@ -274,6 +274,44 @@ function doRegister($username,$password)
     //return false if not valid
 }
 
+function getbookdata($data){
+
+
+$books = json_decode($data)
+
+$output = array();
+
+
+foreach($books->data as $books){
+	$bookJsonArr = array(
+		$name->title, 
+		$publisher->publishedBy,
+		$date->publishedDate,
+		$description->description,
+		$image->image,
+		$pageCount->pageCount,
+		$authors->authors,
+		$isbn->ID,
+		$lang->language,
+		$country->publishedCountry,
+		$printType->printType,
+		$category->category,
+		$isAvailable==NULL?"False":$isAvailable->isAvailable,
+		$price==NULL?0:$price->price,
+		$link->link
+		);
+
+
+
+
+return $output;
+
+
+}
+
+
+
+
 
 function requestProcessor($request)
 {
