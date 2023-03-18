@@ -34,11 +34,18 @@ switch (strtolower($request["type"]))
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "getreadbooks":
+    case "getreadbook":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "getReadBook";
         $rabbitRequest['username'] = $request['username'];
         $rabbitRequest['bookID'] = $request['bookID'];
+        $rabbitRequest['message'] = "test WILL BE A KEY";
+        $response = $client->send_request($rabbitRequest);
+        break;
+    case "getreadbooks":
+        $rabbitRequest = array();
+        $rabbitRequest['type'] = "getReadBooks";
+        $rabbitRequest['username'] = $request['username'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;

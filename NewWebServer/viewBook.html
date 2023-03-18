@@ -22,7 +22,13 @@
 </script>
 
 <script>
+
+
+
     const testing = true;
+
+
+
     function HandleSuccess(type,responseText){
         var parsed = JSON.parse(responseText);
         if(test.returnCode == '202'){
@@ -32,6 +38,7 @@
                 case 'getbook':
                 case 'getrating':
                 case 'getdicussionposts':
+                case 'getreadbook':
                     returnVar = parsed['data'];
                     break;
                 case 'setrating':
