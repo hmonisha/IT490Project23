@@ -52,7 +52,7 @@
 
     function sendRequest(type,requestString) {
         var request = new XMLHttpRequest();
-        request.open("POST","login.php",true);
+        request.open("POST","BookLookups.php",true);
         request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         request.onreadystatechange= function ()
         {
@@ -60,6 +60,7 @@
                 return HandleSuccess(type,this.responseText);
             }
         }
+        request.send(requestString);
     }
 
     function addDiscussionPost(){
@@ -161,7 +162,7 @@
         if(readBook){
             document.write("You have read this book!<br><br>");
         } else {
-            document.write("<input type=\"submit\" value=\"I have read this book\" onclick='addReadBook();'><br><br>");
+            document.write("<input type=\"submit\" value=\"I have read this book\" onclick='setReadBook();'><br><br>");
         }
 
         if(ratObj==null){
