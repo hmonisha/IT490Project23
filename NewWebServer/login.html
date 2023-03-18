@@ -6,7 +6,6 @@
         {
 
             var text = JSON.parse(response);
-			    alert(text.message);
             if(text.returnCode == '202'){
                 localStorage.setItem("user",document.getElementById('username'));
                 window.location.replace("/MainPage.html");
@@ -38,9 +37,6 @@
 		    event_logger('user registration','user has been registered');
                     HandleLoginResponse(this.responseText);
 				
-                }
-                if(this.readyState == 4) {
-                    alert(this.responseText);
                 }
             }
             request.send("type=registration&username="+username+"&password="+password);

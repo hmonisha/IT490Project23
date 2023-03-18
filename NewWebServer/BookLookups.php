@@ -17,9 +17,9 @@ $response = "unsupported request type, politely FUCK OFF";
 
 $client = new rabbitMQClient("testRabbitMQ.ini","testServer"); //CHANGE TO CORRECT SERVER!!
 
-switch ($request["type"])
+switch (strtolower($request["type"]))
 {
-    case "searchBooks":
+    case "searchbooks":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "searchBooks";
         $rabbitRequest['searchQuery'] = $request['searchQuery'];
@@ -27,14 +27,14 @@ switch ($request["type"])
         $response = $client->send_request($rabbitRequest);
 
         break;
-    case "getBook":
+    case "getbook":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "getBook";
         $rabbitRequest['bookID'] = $request['bookID'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "getReadBook":
+    case "getreadbooks":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "getReadBook";
         $rabbitRequest['username'] = $request['username'];
@@ -42,7 +42,7 @@ switch ($request["type"])
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "setReadBook":
+    case "setreadbook":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "setReadBook";
         $rabbitRequest['username'] = $request['username'];
@@ -50,14 +50,14 @@ switch ($request["type"])
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "getDiscssionPosts":
+    case "getdiscssionposts":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "getDiscussionPosts";
         $rabbitRequest['bookID'] = $request['bookID'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "addReview":
+    case "adddiscussionpost":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "addDiscussionPost";
         $rabbitRequest['username'] = $request['addDiscussionPost'];
@@ -66,7 +66,7 @@ switch ($request["type"])
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "getRating":
+    case "getrating":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "getRating";
         $rabbitRequest['username'] = $request['username'];
@@ -74,7 +74,7 @@ switch ($request["type"])
         $rabbitRequest['message'] = "test WILL BE A KEY";
         $response = $client->send_request($rabbitRequest);
         break;
-    case "setRating":
+    case "setrating":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "setRating";
         $rabbitRequest['username'] = $request['username'];
