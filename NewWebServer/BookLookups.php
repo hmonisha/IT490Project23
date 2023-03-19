@@ -67,7 +67,7 @@ switch (strtolower($request["type"]))
     case "adddiscussionpost":
         $rabbitRequest = array();
         $rabbitRequest['type'] = "addDiscussionPost";
-        $rabbitRequest['username'] = $request['addDiscussionPost'];
+        $rabbitRequest['username'] = $request['username'];
         $rabbitRequest['bookID'] = $request['bookID'];
         $rabbitRequest['post'] = $request['post'];
         $rabbitRequest['message'] = "test WILL BE A KEY";
