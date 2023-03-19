@@ -299,7 +299,7 @@ function requestProcessor($request)
 
           }
           break;
-    case "registration";
+      case "registration":
         $pwd = hash('sha256',$request['password']);
         $register = doRegister($request['username'],$pwd);
         if($register){
@@ -311,6 +311,39 @@ function requestProcessor($request)
 
         }
         break;
+      case 'searchbooks':
+          $query = $request['searchQuery'];
+          break;
+      case 'getbook':
+          $bookID = $request['bookID'];
+          break;
+      case 'getreadbook':
+          $username = $request['username'];
+          $bookID = $request['bookID'];
+      case 'getreadbooks':
+          $username = $request['username'];
+          break;
+      case 'setreadbook':
+          $username = $request['username'];
+          $bookID = $request['bookID'];
+          break;
+      case 'getdiscussionposts':
+          $bookID = $request['bookID'];
+          break;
+      case 'adddiscussionpost':
+          $username = $request['username'];
+          $bookID = $request['bookID'];
+          $post = $request['post'];
+          break;
+      case 'getrating':
+          $username = $request['username'];
+          $bookID = $request['bookID'];
+          break
+      case 'setrating':
+          $username = $request['username'];
+          $bookID = $request['bookID'];
+          $rating = $request['rating'];
+          break;
   }
   $loginStr = $login ? 'True' : 'False';
   return array("returnCode" => '0', 'message'=>"Server received request and processed and replied with $loginStr");
