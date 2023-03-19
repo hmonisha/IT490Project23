@@ -91,7 +91,7 @@ function getPassHash($username){
 }
 
 
-function addBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price){
+function addBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -99,8 +99,8 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 	die("Connection failed: " . $conn->connect_error);
 	}
 
-	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	$stmt->bind_param("ssisbisissssd", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price);
+	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("ssisbisissssdb", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link);
 	$stmt->execute();
 
 
@@ -115,7 +115,7 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 }
 
 
-function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price){
+function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -123,12 +123,12 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price FROM books WHERE bookname = $bookName";
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookName";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
                 while($row = $result->fetch_assoc()){
-                 echo "bookName: " . $row["bookName"]. "publishedBy: " . $row["publishedBy"]. "publishedDate: " . $row["publishedDate"]. "description: " . $row["description"]. "image: " . $row["image"]. "pageCount: " . $row["pageCount"]. "authors: " . $row["authors"]. "id: " . $row["id"]. "language: " . $row["language"]. "publishedCountry: " . $row["publishedCountry"]. "printType: " . $row["printType"]. "category: " . $row["category"]. "price: " . $row["price"]. "<br>";
+                 echo "bookName: " . $row["bookName"]. "publishedBy: " . $row["publishedBy"]. "publishedDate: " . $row["publishedDate"]. "description: " . $row["description"]. "image: " . $row["image"]. "pageCount: " . $row["pageCount"]. "authors: " . $row["authors"]. "id: " . $row["id"]. "language: " . $row["language"]. "publishedCountry: " . $row["publishedCountry"]. "printType: " . $row["printType"]. "category: " . $row["category"]. "price: " . $row["price"]. "link:" . $row["link"]. "<br>";
 
                 } else {
 
@@ -273,6 +273,57 @@ function doRegister($username,$password)
     return false;
     //return false if not valid
 }
+
+function getbookdata($data){
+
+
+$books = json_decode($data)
+
+$output = array();
+
+
+foreach($books->data as $books){
+	$bookJsonArr = array(
+		$name->title, 
+		$publisher->publishedBy,
+		$date->publishedDate,
+		$description->description,
+		$image->image,
+		$pageCount->pageCount,
+		$authors->authors,
+		$isbn->ID,
+		$lang->language,
+		$country->publishedCountry,
+		$printType->printType,
+		$category->category,
+		$isAvailable==NULL?"False":$isAvailable->isAvailable,
+		$price==NULL?0:$price->price,
+		$link->link
+		);
+
+
+
+
+return $output;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function requestProcessor($request)
