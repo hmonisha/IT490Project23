@@ -256,20 +256,19 @@ function getDiscussionPosts($bookID){
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                 echo "post_id: " . $row["post_id"]. "topic_id: " . $row["topic_id"]. "post_content: " . $row["post_content"]. "post_owner: " . $row["post_owner"]. "<br>";
-
-                } else {
-
-                  echo "0 results";
-                }
-
+            $posts = "{reviews:[{";
+                while($row = $result->fetch_assoc()) {
+                    $posts .= "'username':'".$row['post_owner'."','text':'".$row['post_content']."'},";
+                  }
+                  $posts = substr($posts,-,-1);
+                $posts.="]}";
                 $conn->close();
+                return $posts;
+        } else {
 
-
-
-
-
+            $conn->close();
+            return "{}";
+        }
 }
 
 
