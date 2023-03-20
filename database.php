@@ -50,7 +50,7 @@ function addUser($username,$passhash){
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
+        return "";
         }
 
         $stmt = $conn->prepare("INSERT INTO userLogin (username, passhash) VALUES (?, ?)");
@@ -76,7 +76,7 @@ function getPassHash($username){
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 	if ($conn->connect_error){
-		die("Connection failed: " . $conn->connect_error);
+		return "";
 	}
 
 	$sql = "SELECT username FROM userLogin WHERE username=$username";
@@ -122,7 +122,7 @@ function searchBooks($bookQuery) {
     $conn = new mysqli($serverName, $dbUser, $dpPass, $loginDBName);
 
     if ($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
+        return "";
     }
 
     $stmt = $conn->prepare("SELECT bookName, image, authors, publishedBy,price,link, id FROM books WHERE bookName LIKE %?% LIMIT 10");
@@ -153,18 +153,20 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 	if ($conn->connect_error){
-	die("Connection failed: " . $conn->connect_error);
+	return "";
+    return "";
 	}
 
 	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$stmt->bind_param("ssisbisissssdb", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link);
 	$stmt->execute();
 
-
+    $result = $stmt->get_result();
 
 	echo "Book added successfully";
 	$stmt->close();
 	$conn->close();
+    return "success";
 
 
 
@@ -179,20 +181,29 @@ function getBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-                die("Connection failed: " . $conn->connect_error);
+                return "";
         }
 
         $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookName";
         $result = $conn->query($sql);
 
-        if ($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                 echo "bookName: " . $row["bookName"]. "publishedBy: " . $row["publishedBy"]. "publishedDate: " . $row["publishedDate"]. "description: " . $row["description"]. "image: " . $row["image"]. "pageCount: " . $row["pageCount"]. "authors: " . $row["authors"]. "id: " . $row["id"]. "language: " . $row["language"]. "publishedCountry: " . $row["publishedCountry"]. "printType: " . $row["printType"]. "category: " . $row["category"]. "price: " . $row["price"]. "link:" . $row["link"]. "<br>";
+    if ($result->num_rows == 1){
 
-                } else {
+        $book = $result->fetch_row();
+        $conn->close();
+        return "{'bookName':'".$book['bookname']."','img':'".$book['image']."','authors':'".$book['authors']."', 'publisher':'".$book['publishedBy']."','PublishDate':'".$book['publishedDate']."','Categories':[".$book['category']."],'price':'".$book['price']."','buyLink':'".$book['link']."','pageCount':'".$book['pageCount']."','Language':'".$book['language']."','Description':'".$book['description']."'}";
 
-                  echo "0 results";
-                }
+    } elseif($result->num_rows > 1) {
+        //error
+
+        $conn->close();
+        return "";
+    } else {
+
+        $conn->close();
+
+        return "";
+    }
 
                 $conn->close();
 
@@ -210,7 +221,8 @@ function addDiscussionPost($bookID, $post_content, $post_owner){
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
+        return "";
+        return "";
         }
 
         $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_owner) VALUES (?, ?, ?, ?, ?)");
@@ -222,6 +234,8 @@ function addDiscussionPost($bookID, $post_content, $post_owner){
         echo "Forum added successfully";
         $stmt->close();
         $conn->close();
+
+    return "success";
 
 
 
@@ -235,7 +249,7 @@ function getDiscussionPosts($bookID){
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-                die("Connection failed: " . $conn->connect_error);
+                return "";
         }
 
         $sql = "SELECT post_id, topic_id, post_content, post_date, post_owner FROM forum_posts WHERE post_id = $post_id";
@@ -264,22 +278,29 @@ function getReadbook($bookID, $username){
 
 global $dbUser, $dbPass, $serverName, $loginDBName;
 
-conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-                die("Connection failed: " . $conn->connect_error);
+                return "";
         }
 
         $sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	$result= $conn->query($sql);
 
-	if ($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-			echo "BookID: " . $row["bookID"]. "Username: " . $row["username"]. "<br>";
+    if ($result->num_rows == 1){
 
-		} else {
+        $conn->close();
+        return "{'readBool':'true'}";
+    } elseif($result->num_rows > 1) {
+        //error
 
-			echo "0 results";
-		}
+        $conn->close();
+        return "";
+    } else {
+
+        $conn->close();
+
+        return "{'readBool':'false'}";
+    }
 
 		$conn->close;
 
@@ -300,7 +321,8 @@ global $dbUser, $dbPass, $serverName, $loginDBName;
    $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
+
+            return "";
         }
 
         $stmt = $conn->prepare("INSERT INTO bookID, username) VALUES (?, ?)");
@@ -312,6 +334,8 @@ global $dbUser, $dbPass, $serverName, $loginDBName;
         echo "Readbook added successfully";
         $stmt->close();
 	$conn->close();
+
+    return "success";
 
 
 
@@ -328,7 +352,7 @@ function addReview($bookName, $reviewerName, $rating){
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
+        return "";
         }
 
         $stmt = $conn->prepare("INSERT INTO book_reviews (id, bookName, reviewerName, reviewDate, rating, review_text) VALUES (?, ?, ?, ?, ?, ?)");
@@ -357,19 +381,29 @@ function getReview($bookid, $reviewerName){
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
-                die("Connection failed: " . $conn->connect_error);
+                return "";
         }
 
         $sql = "SELECT id, bookName, reviewerName, reviewDate, rating, review_text FROM book_reviews WHERE id = $id";
         $result = $conn->query($sql);
 
-        if ($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                 echo "id: " . $row["id"]. "bookName: " . $row["bookName"]. "reviewerName: " . $row["reviewerName"]. "reviewDate: " . $row["reviewDate"]. "rating: " . $row["rating"]. "review_text: " . $row["review_text"]. "<br>";
+        if ($result->num_rows == 1){
+                while($row = $result->fetch_assoc()) {
 
+                    $conn->close();
+
+                    return "{'rating':'".$result->fetch_row()['rating']."'}";
+                }
+        } elseif($result->num_rows > 1) {
+                        //error
+
+            $conn->close();
+                        return "";
                 } else {
 
-                  echo "0 results";
+        $conn->close();
+
+                  return "{}}";
                 }
 
                 $conn->close();
@@ -473,7 +507,7 @@ function getReadBooks($username) {
     $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
     if ($conn->connect_error){
-        die("Connection failed: " . $conn->connect_error);
+        return "";
     }
 
     $sql = "SELECT bookID,username FROM readBook WHERE username = $username";
