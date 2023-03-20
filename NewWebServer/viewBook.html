@@ -31,9 +31,9 @@
 
     function HandleSuccess(type,responseText){
         var parsed = JSON.parse(responseText);
+        var returnVar = "";
         if(test.returnCode == '202'){
             //set up log here too?
-            var returnVar = "";
             switch(strtolower(type)){
                 case 'getbook':
                 case 'getrating':
