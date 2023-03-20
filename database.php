@@ -43,6 +43,10 @@ function doLogin($username,$password)
 
 function addUser($username,$passhash){
 
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+	
+	
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -65,6 +69,9 @@ function addUser($username,$passhash){
 
 
 function getPassHash($username){
+
+	
+	global $dbUser, $dbPass, $serverName, $loginDBName;
 
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -93,6 +100,8 @@ function getPassHash($username){
 
 function addBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 	if ($conn->connect_error){
@@ -117,7 +126,9 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 
 function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
-$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
                 die("Connection failed: " . $conn->connect_error);
@@ -144,16 +155,18 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 
 
-function addForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+function addForum($post_id, $bookID, $post_content, $post_owner){
 
-$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
         die("Connection failed: " . $conn->connect_error);
         }
 
-        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_date, post_owner) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisis", $post_id, $topic_id, $post_content, $post_date, $post_owner);
+        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_owner) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisis", $post_id, $bookID, $post_content, $post_owner);
         $stmt->execute();
 
 
@@ -167,15 +180,17 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 }	
 
 
-function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+function getForum($post_id, $bookID, $post_content, $post_owner){
 	
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
                 die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = "SELECT post_id, topic_id, post_content, post_date, post_owner FROM forum_posts WHERE post_id = $post_id";
+        $sql = "SELECT post_id, bookID, post_content, post_owner FROM forum_posts WHERE post_id = $post_id";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
@@ -197,9 +212,68 @@ function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
 
 
 
+function getReadbook($bookID, $username){
+
+global $dbUser, $dbPass, $serverName, $loginDBName;
+
+conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	$result= $conn->query($sql); 
+
+	if ($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+			echo "BookID: " . $row["bookID"]. "Username: " . $row["username"]. "<br>";
+
+		} else {
+
+			echo "0 results"; 
+		}
+
+		$conn->close;
+	
+
+
+}
+
+
+
+
+function setReadbook($bookID, $username){
+
+
+global $dbUser, $dbPass, $serverName, $loginDBName;
+
+
+
+   $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("INSERT INTO bookID, username) VALUES (?, ?)");
+        $stmt->bind_param("is", $bookID, $username);
+        $stmt->execute();
+
+
+
+        echo "Readbook added successfully";
+        $stmt->close();
+	$conn->close();
+
+
+
+
+}
 
 function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
 
+
+	global $dbUser, $dbPass, $serverName, $loginDBName;
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -223,7 +297,10 @@ function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review
 }
 
 
-function getReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+
+
+
+function getReviews($reviewid, $bookid, $reviewerName, $rating){
 
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -231,7 +308,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = "SELECT id, bookName, reviewerName, reviewDate, rating, review_text FROM book_reviews WHERE id = $id";
+        $sql = "SELECT reviewid, bookName, reviewerName, rating, FROM book_reviews WHERE id = $id";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
@@ -309,11 +386,6 @@ return $output;
 
 
 }
-
-
-
-
-
 
 
 
