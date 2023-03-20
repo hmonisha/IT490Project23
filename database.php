@@ -231,7 +231,7 @@ function getDiscussionPosts($bookID){
                 while($row = $result->fetch_assoc()) {
                     $posts .= "'username':'".$row['post_owner']."','text':'".$row['post_content']."'},";
                   }
-                  $posts = substr($posts,-,-1);
+                  $posts = substr($posts,0,-1);
                 $posts.="]}";
                 $conn->close();
                 return $posts;
@@ -348,7 +348,7 @@ function addReview($bookName, $reviewerName, $rating){
 
 function getReview($bookid, $reviewerName, $rating){
 
-        global $serverName, $dbUser, $dbPass, $loginDBName
+        global $serverName, $dbUser, $dbPass, $loginDBName;
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -384,14 +384,14 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 }
 
-function doRegister($username,$password)
+function doRegister($username,$passHash)
 {
         try{
                 global $dbUser, $dbPass, $serverName, $loginDBName;
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $loginStmt = $dbConn->prepare("INSERT INTO userLogin (username, passhash) VALUES (:username, :passhash) ");
-                $loginStmt->execute([':username' => $username], ':passhash' => $passHash);
+		$loginStmt->execute([':username' => $username, ':passHash' => $passHash]);
                 if ($loginStmt->rowCount() == 1) {
                     return true; 
                 } else {
@@ -421,7 +421,7 @@ function getSmallBook($bookID) {
                 $searchStmt->execute([':bookID' => $bookID]);
                 if ($searchStmt->rowCount() == 1) {
                     foreach($searchStmt->fetch() as $book) {
-                        return "{'bookName':".$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'.", 'publisher':".$book['publishedBy'].",'id'".$book['id'."}";
+                        return "{'bookName':".$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
                     }
                 } else {
                     //error
@@ -433,8 +433,8 @@ function getSmallBook($bookID) {
                 return '';
                 //error
             }
-        }
-        }
+        
+        
 }
 
 
@@ -452,7 +452,7 @@ function getReadBooks($username) {
 
     if ($result->num_rows > 0){
 
-        $returnJson = "["
+        $returnJson = "[";
 
         while($row = $result->fetch_assoc()) {
             $returnJson .= getSmallBook($row['bookID']).',';
