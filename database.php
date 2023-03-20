@@ -68,37 +68,8 @@ function addUser($username,$passhash){
 
 
 
-function getPassHash($username){
-
-
-	global $dbUser, $dbPass, $serverName, $loginDBName;
-
-	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
-
-	if ($conn->connect_error){
-		return "";
-	}
-
-	$sql = "SELECT username FROM userLogin WHERE username=$username";
-	$result = $conn->query($sql);
-
-	if ($result->num_rows > 0){
-		while($row = $result->fetch_assoc()){
-		 echo "username: " . $row["username"]. "<br>";
-
-		} else {
-
-		  echo "0 results";
-		}
-
-		$conn->close();
-	
-
-
-}
-
 function sendSearch($query) {
-    $client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+    $client = new rabbitMQClient("rabbitMQ_api.ini","testServer");
     $rabbitRequest = array();
     $rabbitRequest['type'] = 'booksearch';
     $rabbitRequest['query'] = $query;
@@ -258,7 +229,7 @@ function getDiscussionPosts($bookID){
         if ($result->num_rows > 0){
             $posts = "{reviews:[{";
                 while($row = $result->fetch_assoc()) {
-                    $posts .= "'username':'".$row['post_owner'."','text':'".$row['post_content']."'},";
+                    $posts .= "'username':'".$row['post_owner']."','text':'".$row['post_content']."'},";
                   }
                   $posts = substr($posts,-,-1);
                 $posts.="]}";
@@ -283,7 +254,8 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 
-        $sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	$result= $conn->query($sql);
+$sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	
+$result= $conn->query($sql);
 
     if ($result->num_rows == 1){
 
@@ -374,7 +346,7 @@ function addReview($bookName, $reviewerName, $rating){
 
 
 
-function getReview($bookid, $reviewerName){
+function getReview($bookid, $reviewerName, $rating){
 
         global $serverName, $dbUser, $dbPass, $loginDBName
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
@@ -383,7 +355,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 
-        $sql = "SELECT id, bookName, reviewerName, reviewDate, rating, review_text FROM book_reviews WHERE id = $id";
+        $sql = "SELECT id, bookName, reviewerName, rating, review_text FROM book_reviews WHERE id = $id";
         $result = $conn->query($sql);
 
         if ($result->num_rows == 1){
@@ -436,45 +408,11 @@ function doRegister($username,$password)
     //return false if not valid
 }
 
-function getbookdata($data){
-
-
-$books = json_decode($data);
-
-$output = array();
-
-
-foreach($books->data as $books){
-	$bookJsonArr = array(
-		$name->title, 
-		$publisher->publishedBy,
-		$date->publishedDate,
-		$description->description,
-		$image->image,
-		$pageCount->pageCount,
-		$authors->authors,
-		$isbn->ID,
-		$lang->language,
-		$country->publishedCountry,
-		$printType->printType,
-		$category->category,
-		$isAvailable==NULL?"False":$isAvailable->isAvailable,
-		$price==NULL?0:$price->price,
-		$link->link
-		);
 
 
 
 
-return $output;
-
-
-
-}
-
-
-
-        function getSmallBook($bookID) {
+function getSmallBook($bookID) {
             try{
                 global $dbUser, $dbPass, $serverName, $loginDBName;
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
@@ -509,7 +447,7 @@ function getReadBooks($username) {
         return "";
     }
 
-    $sql = "SELECT bookID,username FROM readBook WHERE username = $username";
+    $sql = "SELECT bookID, username FROM readBook WHERE username = $username";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0){
@@ -661,7 +599,7 @@ function requestProcessor($request)
   //log error
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+$server = new rabbitMQServer("rabbitMQ_db.ini","testServer");
 
 
 
