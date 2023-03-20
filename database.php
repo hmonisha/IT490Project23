@@ -164,7 +164,7 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 }
 
 
-function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
+function getBook($bookID){
 
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -172,7 +172,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookName";
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookID";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
@@ -193,7 +193,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 
 
-function addForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+function addForumPost($book_id, $post_content, $post_owner){
 
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -216,7 +216,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 }	
 
 
-function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+function getForumPosts($post_id, $book_id){
 	
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -247,7 +247,7 @@ function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
 
 
 
-function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+function addReviews($id, $bookName, $reviewerName, $rating){
 
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -272,7 +272,7 @@ function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review
 }
 
 
-function getReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+function getReviews($bookName, $reviewerName){
 
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
