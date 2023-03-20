@@ -423,7 +423,7 @@ function requestProcessor($request)
       case 'getbook':
           $bookID = $request['bookID'];
           break;
-      case 'getreadbook':
+      case 'setreadbook':
           $username = $request['username'];
           $bookID = $request['bookID'];
       case 'getreadbooks':
