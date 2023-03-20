@@ -360,7 +360,9 @@ return $output;
 }
 
 
-
+function getReadBooks($username) {
+}
+}
 
 
 
@@ -389,7 +391,7 @@ function requestProcessor($request)
   {
   case "login":
           $pwd = hash('sha256',$request['password']);
-          $login = doRegister($request['username'],$pwd);
+          $login = doLogin($request['username'],$pwd);
           if($login){
                 return array("returnCode" => '202', 'message'=>"Server received request and approved the login request.");
 
