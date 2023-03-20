@@ -43,6 +43,10 @@ function doLogin($username,$password)
 
 function addUser($username,$passhash){
 
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+
+
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -66,6 +70,9 @@ function addUser($username,$passhash){
 
 function getPassHash($username){
 
+
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 	if ($conn->connect_error){
@@ -88,7 +95,6 @@ function getPassHash($username){
 	
 
 
-    }
 }
 
 function sendSearch($query) {
@@ -142,6 +148,8 @@ function searchBooks($bookQuery) {
 
 function addBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 	if ($conn->connect_error){
@@ -150,7 +158,7 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 
 	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$stmt->bind_param("ssisbisissssdb", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link);
-	$stmt->execute();lt();
+	$stmt->execute();
 
 
 
@@ -164,15 +172,17 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 }
 
 
-function getBook($bookID){
+function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
-$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
                 die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookID";
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookName";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
@@ -188,20 +198,23 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 
 
+
 }
 
 
 
-function addForumPost($book_id, $post_content, $post_owner){
+function addForum($post_id, $bookID, $post_content, $post_owner){
 
-$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
         die("Connection failed: " . $conn->connect_error);
         }
 
-        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_date, post_owner) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisis", $post_id, $topic_id, $post_content, $post_date, $post_owner);
+        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_owner) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisis", $post_id, $bookID, $post_content, $post_owner);
         $stmt->execute();
 
 
@@ -215,8 +228,10 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 }	
 
 
-function getForumPosts($post_id, $book_id){
+function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
 	
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -245,9 +260,71 @@ function getForumPosts($post_id, $book_id){
 
 
 
+function getReadbook($bookID, $username){
 
-function addReview($id, $bookName, $reviewerName, $rating){
+global $dbUser, $dbPass, $serverName, $loginDBName;
 
+conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+                die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	$result= $conn->query($sql);
+
+	if ($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+			echo "BookID: " . $row["bookID"]. "Username: " . $row["username"]. "<br>";
+
+		} else {
+
+			echo "0 results";
+		}
+
+		$conn->close;
+
+
+
+}
+
+
+
+
+function setReadbook($bookID, $username){
+
+
+global $dbUser, $dbPass, $serverName, $loginDBName;
+
+
+
+   $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+        if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+        $stmt = $conn->prepare("INSERT INTO bookID, username) VALUES (?, ?)");
+        $stmt->bind_param("is", $bookID, $username);
+        $stmt->execute();
+
+
+
+        echo "Readbook added successfully";
+        $stmt->close();
+	$conn->close();
+
+
+
+
+}
+
+
+
+
+function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+
+
+	global $dbUser, $dbPass, $serverName, $loginDBName;
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -271,8 +348,12 @@ function addReview($id, $bookName, $reviewerName, $rating){
 }
 
 
-function getReview($bookName, $reviewerName){
 
+
+
+function getReviews($reviewid, $bookid, $reviewerName, $rating){
+
+        global $serverName, $dbUser, $dbPass, $loginDBName
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
         if ($conn->connect_error){
@@ -325,7 +406,7 @@ function doRegister($username,$password)
 function getbookdata($data){
 
 
-$books = json_decode($data);
+$books = json_decode($data)
 
 $output = array();
 
@@ -357,7 +438,7 @@ return $output;
 
 
 }
-        }
+
 
 
         function getSmallBook($bookID) {
@@ -413,7 +494,8 @@ function getReadBooks($username) {
             return "'books':''";
         }
 
-}
+
+
 
 
 
@@ -431,7 +513,7 @@ function requestProcessor($request)
   {
   case "login":
           $pwd = hash('sha256',$request['password']);
-          $login = doLogin($request['username'],$pwd);
+          $login = doRegister($request['username'],$pwd);
           if($login){
                 return array("returnCode" => '202', 'message'=>"Server received request and approved the login request.");
 
@@ -441,7 +523,7 @@ function requestProcessor($request)
 
           }
           break;
-      case "registration":
+    case "registration";
         $pwd = hash('sha256',$request['password']);
         $register = doRegister($request['username'],$pwd);
         if($register){
