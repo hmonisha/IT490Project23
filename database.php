@@ -203,7 +203,7 @@ function getBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 
 
 
-function addForum($post_id, $bookID, $post_content, $post_owner){
+function addDiscussionPost($bookID, $post_content, $post_owner){
 
 	global $dbUser, $dbPass, $serverName, $loginDBName;
 
@@ -228,7 +228,7 @@ function addForum($post_id, $bookID, $post_content, $post_owner){
 }	
 
 
-function getForum($post_id, $topic_id, $post_content, $post_date, $post_owner){
+function getDiscussionPosts($bookID){
 	
 	global $dbUser, $dbPass, $serverName, $loginDBName;
 
@@ -321,7 +321,7 @@ global $dbUser, $dbPass, $serverName, $loginDBName;
 
 
 
-function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review_text){
+function addReview($bookName, $reviewerName, $rating){
 
 
 	global $dbUser, $dbPass, $serverName, $loginDBName;
@@ -351,7 +351,7 @@ function addReviews($id, $bookName, $reviewerName, $reviewDate, $rating, $review
 
 
 
-function getReviews($reviewid, $bookid, $reviewerName, $rating){
+function getReview($bookid, $reviewerName){
 
         global $serverName, $dbUser, $dbPass, $loginDBName
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
@@ -406,7 +406,7 @@ function doRegister($username,$password)
 function getbookdata($data){
 
 
-$books = json_decode($data)
+$books = json_decode($data);
 
 $output = array();
 
@@ -513,7 +513,7 @@ function requestProcessor($request)
   {
   case "login":
           $pwd = hash('sha256',$request['password']);
-          $login = doRegister($request['username'],$pwd);
+          $login = doLogin($request['username'],$pwd);
           if($login){
                 return array("returnCode" => '202', 'message'=>"Server received request and approved the login request.");
 
@@ -584,7 +584,7 @@ function requestProcessor($request)
           break;
       case 'getdiscussionposts':
           $bookID = $request['bookID'];
-          $result = getForumPosts($bookID);
+          $result = getDiscussionPosts($bookID);
           if($result = "") {
               //ERROR
           } else {
@@ -595,7 +595,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $bookID = $request['bookID'];
           $postText = $request['post'];
-          $result = addForumPost($bookID,$postText,$username);
+          $result = addDiscussionPost($bookID,$postText,$username);
           if($result = "") {
               //ERROR
           } else {
@@ -611,7 +611,7 @@ function requestProcessor($request)
           } else {
               return array("returnCode" => '202', 'data'=> $result);
           }
-          break
+          break;
       case 'setrating':
           $username = $request['username'];
           $bookID = $request['bookID'];
