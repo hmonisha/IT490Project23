@@ -188,7 +188,6 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
 
 
-
 }
 
 
@@ -326,7 +325,7 @@ function doRegister($username,$password)
 function getbookdata($data){
 
 
-$books = json_decode($data)
+$books = json_decode($data);
 
 $output = array();
 
@@ -358,22 +357,63 @@ return $output;
 
 
 }
+        }
+
+
+        function getSmallBook($bookID) {
+            try{
+                global $dbUser, $dbPass, $serverName, $loginDBName;
+                $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
+                $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $searchStmt = $dbConn->prepare("SELECT bookName, image, authors, publishedBy, id FROM books WHERE bookID = :bookID ");
+                $searchStmt->execute([':bookID' => $bookID]);
+                if ($searchStmt->rowCount() == 1) {
+                    foreach($searchStmt->fetch() as $book) {
+                        return "{'bookName':".$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'.", 'publisher':".$book['publishedBy'].",'id'".$book['id'."}";
+                    }
+                } else {
+                    //error
+                    return '';
+                }
+                return '';
+        }catch(PDOExcept $v) {
+                echo "Error: " . $e.getMessage();
+                return '';
+                //error
+            }
+        }
+        }
+}
 
 
 function getReadBooks($username) {
+            global $serverName, $dbUser, $dbPass, $loginDBName;
+
+    $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
+
+    if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "SELECT bookID,username FROM readBook WHERE username = $username";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0){
+
+        $returnJson = "["
+
+        while($row = $result->fetch_assoc()) {
+            $returnJson .= getSmallBook($row['bookID']).',';
+        }
+        $returnJson = substr($returnJson,0,-1);
+        $conn->close();
+        return $returnJson;
+        } else {
+            $conn->close();
+            return "'books':''";
+        }
+
 }
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 
