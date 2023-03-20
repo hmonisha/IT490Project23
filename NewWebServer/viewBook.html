@@ -79,6 +79,8 @@
         } else {
             let username = localStorage.getItem("username");
             sendRequest('adddiscussionpost','type=adddiscussionpost&username='+username+'&bookID='+bookID+'&post='+discussionText);
+            event_logger('Discussion Post','User has added a post to the disscussion');
+
         }
 
     }
@@ -90,6 +92,8 @@
         } else {
             let username = localStorage.getItem("username");
             sendRequest('setrating','type=setrating&username='+username+'&bookID='+bookID+'&rating='+rating);
+            event_logger('Rating','User has left a rating for a book');
+
         }
     }
 
@@ -99,6 +103,8 @@
         } else {
             let username = localStorage.getItem("username");
             sendRequest('setreadbook','type=setreadbook&username='+username+'&bookID='+bookID);
+            event_logger('Read book','User added information on book they have read.');
+
         }
     }
 
@@ -108,6 +114,8 @@
     function getBookID(name){
         if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
             return decodeURIComponent(name[1]);
+            event_logger('Fetch book ID','System fetched the book ID information');
+
     }
 
 
