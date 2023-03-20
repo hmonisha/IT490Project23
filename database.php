@@ -88,6 +88,55 @@ function getPassHash($username){
 	
 
 
+    }
+}
+
+function sendSearch($query) {
+    $client = new rabbitMQClient("testRabbitMQ.ini","testServer");
+    $rabbitRequest = array();
+    $rabbitRequest['type'] = 'booksearch';
+    $rabbitRequest['query'] = $query;
+    $response = $client->send_request($rabbitRequest);
+    if($response['returnCode'] == '202') {
+        $bookJson = $response['bookJson'];
+        $books = json_decode($bookJson);
+        foreach($books as $book){
+            addBook($book->bookName,$book->publishedBy,$book->publishedDate,$book->description, $book->image,$book->pageCount,$book->authors,$book->ID,$book->language,$book->publishedCountry,$book->printType,$book->category,$book->price,$book->link);
+        }
+        return true;
+    } else {
+        return false;
+        //log failure in finding books
+    }
+
+}
+
+function searchBooks($bookQuery) {
+
+    $conn = new mysqli($serverName, $dbUser, $dpPass, $loginDBName);
+
+    if ($conn->connect_error){
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $stmt = $conn->prepare("SELECT bookName, image, authors, publishedBy,price,link, id FROM books WHERE bookName LIKE %?% LIMIT 10");
+    $stmt->bind_param("s",$bookQuery);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result->num_rows >= 10) {
+        $returnJSON = "[";
+        while($row = $result->fetch_array()) {
+            $returnJSON .= "{'bookName':$row['bookName'],'img':$row['image'],'authors':$row['authors'],'publisher':$row['publishedBy'],'price':$row['price'],''buyLink:$row['link'],'id':$row['ID']},";
+        }
+        $returnJSON = substr($returnJSON, 0, -1) . "]";
+        return $returnJSON;
+    } else {
+        if(sendSearch($bookQuery)){
+            searchBooks($bookQuery);
+        } else {
+            return "";
+        }
+    }
 }
 
 
@@ -101,7 +150,7 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 
 	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	$stmt->bind_param("ssisbisissssdb", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link);
-	$stmt->execute();
+	$stmt->execute();lt();
 
 
 
@@ -364,6 +413,12 @@ function requestProcessor($request)
         break;
       case 'searchbooks':
           $query = $request['searchQuery'];
+          $result = searchBooks($query);
+          if($result = "") {
+            //ERROR
+          } else {
+            return array("returnCode" => '202', 'data'=> $result);
+          }
           break;
       case 'getbook':
           $bookID = $request['bookID'];
