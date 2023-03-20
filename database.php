@@ -117,7 +117,7 @@ function sendSearch($query) {
 
 }
 
-function searchBooks($bookQuery) {
+function searchBooks($bookQuery, $firstRun = TRUE) {
 
     $conn = new mysqli($serverName, $dbUser, $dpPass, $loginDBName);
 
@@ -129,7 +129,7 @@ function searchBooks($bookQuery) {
     $stmt->bind_param("s",$bookQuery);
     $stmt->execute();
     $result = $stmt->get_result();
-    if($result->num_rows >= 10) {
+    if($result->num_rows >= 10 or !$firstRun) {
         $returnJSON = "[";
         while($row = $result->fetch_array()) {
             $returnJSON .= "{'bookName':$row['bookName'],'img':$row['image'],'authors':$row['authors'],'publisher':$row['publishedBy'],'price':$row['price'],''buyLink:$row['link'],'id':$row['ID']},";
@@ -138,7 +138,7 @@ function searchBooks($bookQuery) {
         return $returnJSON;
     } else {
         if(sendSearch($bookQuery)){
-            searchBooks($bookQuery);
+            searchBooks($bookQuery, false);
         } else {
             return "";
         }
