@@ -247,7 +247,7 @@ function getForumPosts($post_id, $book_id){
 
 
 
-function addReviews($id, $bookName, $reviewerName, $rating){
+function addReview($id, $bookName, $reviewerName, $rating){
 
 	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -272,7 +272,7 @@ function addReviews($id, $bookName, $reviewerName, $rating){
 }
 
 
-function getReviews($bookName, $reviewerName){
+function getReview($bookName, $reviewerName){
 
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
@@ -417,42 +417,91 @@ function requestProcessor($request)
           if($result = "") {
             //ERROR
           } else {
-            return array("returnCode" => '202', 'data'=> $result);
+            return array("returnCode" => '202', 'books'=> $result);
           }
           break;
       case 'getbook':
           $bookID = $request['bookID'];
+          $result = getBook($bookID);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202', 'data'=> $result);
+          }
+          break;
+      case 'getreadbook':
+          $username = $request['username'];
+          $bookID = $request['bookID'];
+          $result = getReadBook($bookID,$username);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202', 'data'=> $result);
+          }
           break;
       case 'setreadbook':
           $username = $request['username'];
           $bookID = $request['bookID'];
+          $result = setReadBook($bookID,$username);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202');
+          }
+          break;
       case 'getreadbooks':
           $username = $request['username'];
-          break;
-      case 'setreadbook':
-          $username = $request['username'];
-          $bookID = $request['bookID'];
+          $result = getReadBooks($username);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202', 'books'=> $result);
+          }
           break;
       case 'getdiscussionposts':
           $bookID = $request['bookID'];
+          $result = getForumPosts($bookID);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202', 'data'=> $result);
+          }
           break;
       case 'adddiscussionpost':
           $username = $request['username'];
           $bookID = $request['bookID'];
-          $post = $request['post'];
+          $postText = $request['post'];
+          $result = addForumPost($bookID,$postText,$username);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202');
+          }
           break;
       case 'getrating':
           $username = $request['username'];
           $bookID = $request['bookID'];
+          $result = getReview($bookID,$username);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202', 'data'=> $result);
+          }
           break
       case 'setrating':
           $username = $request['username'];
           $bookID = $request['bookID'];
           $rating = $request['rating'];
+          $result = addReview($bookID,$rating,$username);
+          if($result = "") {
+              //ERROR
+          } else {
+              return array("returnCode" => '202');
+          }
           break;
   }
-  $loginStr = $login ? 'True' : 'False';
-  return array("returnCode" => '0', 'message'=>"Server received request and processed and replied with $loginStr");
+  return array("returnCode" => '0', 'message'=>"Error! Server recieved unknown request!");
+  //log error
 }
 
 $server = new rabbitMQServer("testRabbitMQ.ini","testServer");
