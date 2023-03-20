@@ -56,6 +56,8 @@
             request.onreadystatechange = function () {
                 if ((this.readyState == 4) && (this.status == 200)) {
                     return HandleBookReturn(this.responseText);
+                    event_logger('book info sent','User has requested information');
+
                 }
             }
             request.send("type=getreadbooks&username=" + localStorage.getItem("username"));
