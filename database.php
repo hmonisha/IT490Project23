@@ -275,8 +275,6 @@ $result= $conn->query($sql);
 
 		$conn->close;
 
-
-
 }
 
 
@@ -465,7 +463,7 @@ function getReadBooks($username) {
             return "'books':''";
         }
 
-
+}
 
 
 
