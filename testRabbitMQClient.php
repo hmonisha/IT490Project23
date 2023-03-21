@@ -18,15 +18,15 @@ $password = "password";
 $hash = hash('sha256',$password);
 
 $request = array();
-$request['type'] = "Login";
-$request['username'] = "steve";
+$request['type'] = "booksearch";
+$request['query'] = "Harry Potter";
 $request['password'] = $hash;
 $request['message'] = $msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
 
 echo "client received response: ".PHP_EOL;
-print_r($response);
+var_dump($response);
 echo "\n\n";
 
 echo $argv[0]." END".PHP_EOL;
