@@ -17,9 +17,9 @@ function doLogin($username,$password)
                 global $dbUser, $dbPass, $serverName, $loginDBName;
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $loginStmt = $dbConn->prepare("INSERT INTO userLogin (username, passhash) VALUES (:username, :passhash) ");
+                $loginStmt = $dbConn->prepare("SELECT passhash FROM userLogin WHERE username=:username");
                 $loginStmt->execute([':username' => $username]);
-                if($loginStmt->rowCount() < 0 or $loginStmt->rowCount() > 1){
+                if($loginStmt->rowCount() < 1 or $loginStmt->rowCount() > 1){
                         echo "Error: Found incorrect information for user $username";
                         return False;
                 } else {
@@ -75,10 +75,11 @@ function sendSearch($query) {
     $rabbitRequest['query'] = $query;
     $response = $client->send_request($rabbitRequest);
     if($response['returnCode'] == '202') {
-        $bookJson = $response['bookJson'];
-        $books = json_decode($bookJson);
-        foreach($books as $book){
-            addBook($book->bookName,$book->publishedBy,$book->publishedDate,$book->description, $book->image,$book->pageCount,$book->authors,$book->ID,$book->language,$book->publishedCountry,$book->printType,$book->category,$book->price,$book->link);
+	    $books = $response['data'];
+  
+	    foreach($books as $book)
+	    {	var_dump($book);
+            addBook($book["bookName"],$book["publishedBy"],$book["publishedDate"],$book["description"], $book["image"],$book["pageCount"],$book["authors"],$book["ID"],$book["language"],$book["publishedCountry"],$book["printType"],$book["category"],$book["price"],$book["link"]);
         }
         return true;
     } else {
@@ -90,14 +91,16 @@ function sendSearch($query) {
 
 function searchBooks($bookQuery, $firstRun = TRUE) {
 
-    $conn = new mysqli($serverName, $dbUser, $dpPass, $loginDBName);
+	global $dbUser, $dbPass, $serverName, $loginDBName;
+
+	$conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
     if ($conn->connect_error){
         return "";
     }
 
-    $stmt = $conn->prepare("SELECT bookName, image, authors, publishedBy,price,link, id FROM books WHERE bookName LIKE %?% LIMIT 10");
-    $stmt->bind_param("s",$bookQuery);
+    $stmt = $conn->prepare("SELECT bookName, image, authors, publishedBy, price, link, id FROM books WHERE bookName LIKE '%".$bookQuery."%' LIMIT 10");
+    
     $stmt->execute();
     $result = $stmt->get_result();
     if($result->num_rows >= 10 or !$firstRun) {
@@ -127,9 +130,9 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 	return "";
     return "";
 	}
-
-	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	$stmt->bind_param("ssisbisissssdb", $bookName, $publishedBy, $decription, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link);
+		var_dump($bookName);
+	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link, publishedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("ssssissssssdss", $bookName, $publishedBy, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link, $publishedDate);
 	$stmt->execute();
 
     $result = $stmt->get_result();
