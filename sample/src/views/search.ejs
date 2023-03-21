@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel='stylesheet' type='text/css' media='screen' href='/css/bookList.css'>
+    <script src='main.js'></script>
+</head>
+<body id="main">
+    <div class="booktit"><b>Virtual Library</b></div>
+    <div class="frm">
+        <form  action="/" method="POST">
+            <input type="text" name="search" class="form-control" id="query" placeholder="Search for Books" autocomplete="off" autofocus>
+            <input type="submit" class="btn btn-success srcBtn" placeholder="harry" value="search" name="btn">
+        </form>
+    </div>
+    <div class="bookList" id="bookList">
+        <%booklist.forEach(function name(params) {%>
+          
+            <div class="booklist-card">
+                <div class="badge">active</div>
+                <div class="booklist-tumb">
+                    <img src="<%-params.volumeInfo.imageLinks.thumbnail-%>" alt="">
+                </div>
+                <div class="booklist-details">
+                    <span class="booklist-catagory"><%-params.volumeInfo.categories-%></span>
+                    <h4><div class="card-title"><a href=""><%-params.volumeInfo.title-%></a></div></h4>
+                    <div class="subtitle"><p><%-params.volumeInfo.subtitle-%></p></div>
+                    <div class="booklist-bottom-details">
+                        <div class="booklist-price">Pages: <%-params.volumeInfo.pageCount-%><br>
+                            <a href="/details/<%-params.id-%>" >Read More..</a>
+                        </div>
+                        <div class="booklist-links">
+                            <a href=""><i class="fa fa-heart"></i></a>
+                            <a href=""><i class="fa fa-shopping-cart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+      <% }); %>  
+    </div>
+    <div class="footer">
+        <div class="container">
+            <div class="row footer-container">
+                <div class="col-sm-12 col-lg-4 f-sec1  text-center text-lg-left">
+               
+                 
+            </div>
+            <div class="row">
+                <div class="col-12 footer_notes">
+                    <p class="whitecolor text-center w-100 wow fadeInDown">&copy; Virtual Libary <a class="web-link" href="" target="_blank"></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--foo0ter1 sec end-->
+    
+    <!--START SEARCH AREA-->
+    <div class="search-box-overlay">
+        <a><i class="fas fa-times cross-sign" id="close-window"></i></a>
+    
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+</body>
+</html>

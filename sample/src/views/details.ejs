@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Themes Industry">
+ 
+    <title>Virtual Library | Product Detail</title>
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.ico">
+    <!-- Bundle -->
+    <link rel="stylesheet" href="/css/bundle.min.css">
+    <!-- Plugin Css -->
+    <link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/swiper.min.css">
+    <link rel="stylesheet" href="/css/cubeportfolio.min.css">
+    <link rel="stylesheet" href="/css/wow.css">
+    <link rel="stylesheet" href="/css/LineIcons.min.css">
+    <link rel="stylesheet" href="/css/nouislider.min.css">
+    <link rel="stylesheet" href="/css/range-slider.css">
+   
+    <link rel="stylesheet" href="/css/megamenu.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <link rel="stylesheet" href="/css/custom.css">
+
+</head>
+<body>
+<div class="about_content">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="product-body">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb text-center text-lg-left">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Drama</a></li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Sci-tech</a></li>
+                            <li class="breadcrumb-item" aria-current="page"><a href="javascript:void(0)">tales</a></li>
+                            <li class="breadcrumb-item"><a class="active" href="javascript:void(0)">Fiction</a></li>
+                        </ol>
+                    </nav>
+                    <div class="pro-detail-sec row">
+                        <div class="col-12">
+                            <h4 class="pro-heading text-center text-lg-left"><%-bookDetails.volumeInfo.title-%></h4>
+                            <p class="pro-text text-center text-lg-left"><%-bookDetails.volumeInfo.subtitle||bookDetails.volumeInfo.title-%></p>
+                        </div>
+                    </div>
+                    <div class="row product-list product-detail">
+
+                        <div class="col-12 col-lg-6 product-detail-slider">
+                            <div class="wrapper">
+                                <div class="Gallery swiper-container img-magnifier-container" id="gallery">
+                                    <div class="swiper-wrapper myimgs">
+                                        <div class="swiper-slide"> <a href="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" data-fancybox="1" title="Zoom In"><img class="myimage" src="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" alt="gallery"/></a></div>
+                                        <div class="swiper-slide"> <a href="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" data-fancybox="2" title="Zoom In"><img class="myimage" src="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" alt="thumnails"/></a></div>
+                                        <div class="swiper-slide"> <a href="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" data-fancybox="3" title="Zoom In"><img class="myimage" src="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" alt="thumnails"/></a></div>
+                                    </div>
+                                </div>
+                                <div class="Thumbs swiper-container" id="thumbs">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide"> <img src="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" alt="thumnails"/></div>
+                                        <div class="swiper-slide"> <img src="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" alt="thumnails"/></div>
+                                        <div class="swiper-slide"> <img src="<%-bookDetails.volumeInfo.imageLinks.thumbnail-%>" alt="thumnails"/></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6 text-center text-lg-left">
+                            <div class="product-single-price">
+                                <h4><span class="real-price">$249</span> <span><del>$450</del></span></h4>
+                                <p class="pro-description"><%-bookDetails.volumeInfo.subtitle||bookDetails.volumeInfo.title-%></p>
+                            </div>
+
+                            <div class="product-checklist">
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Author:<%-bookDetails.volumeInfo.author-%></li>
+                                    <li><i class="fas fa-check"></i>Publisher:<%-bookDetails.volumeInfo.publisher-%> </li>
+                                    <li><i class="fas fa-check"></i> Published Date:<%-bookDetails.volumeInfo.publishedDate-%></li>
+                                    <li><i class="fas fa-check"></i> Page count :<%-bookDetails.volumeInfo.pageCount-%></li>
+                                </ul>
+                            </div>
+
+                            <div class="row product-quantity input_plus_mins no-gutters">
+
+                                <div class="qty col-12 col-lg-3 d-lg-flex  align-items-lg-center d-inline-block">
+                                    <span class="minus bg-dark"><i class="lni-minus"></i></span>
+                                    <input type="number" class="count" name="qty" value="1">
+                                    <span class="plus bg-dark"><i class="lni-plus"></i></span>
+                                </div>
+                                <div class="col-12 col-lg-9">
+                                    <button class="btn green-color-yellow-gradient-btn" ><a href="<%-bookDetails.volumeInfo.canonicalVolumeLink-%>">Link To Buy</a></button>
+                                    <button class="btn green-color-yellow-gradient-btn" ><a  href="/addedBook">ADD BOOK</a></button>
+                                </div>
+                            </div>
+
+
+                            <div class="dropdown-divider"></div>
+
+                            <div class="product-tags-list">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><p class="d-inline">SKU: <span>00012</span></p></li>
+                                        <li class="breadcrumb-item"><span class="d-inline">Categories:<a href="javascript:void(0)"><%-bookDetails.volumeInfo.title-%></a><span class="comma-separtor"></span></li>
+                                        <li class="breadcrumb-item" aria-current="page"><p class="d-inline">Tags: <a href="javascript:void(0)"><%-bookDetails.id-%></a><span class="comma-separtor">,</span><a href="javascript:void(0)">Classic</a></li>
+                                    </ol>
+                                </nav>
+                            </div>
+
+                           
+                        </div>
+                    
+                        <div class="col-12 mt-4 mb-4">
+                            <div class="row no-gutters product-all-details">
+
+                                <ul class="col-12 nav nav-tabs" id="myTab" role="tablist">
+                                    <li class="col-4 nav-item">
+                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="/#home" role="tab" aria-controls="home" aria-selected="true"> Description</a>
+                                    </li>
+                                    
+                                </ul>
+                                <div class="col-12 tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="fRRywjuBF80Chome" role="tabpanel" aria-labelledby="home-tab">
+                                        <p class="product-tab-description text-center text-lg-left"><%-bookDetails.volumeInfo.subtitle||bookDetails.volumeInfo.discriptions-%></p>
+                                        <p class="product-tab-description text-center text-lg-left"><%-bookDetails.volumeInfo.description-%></p>
+                                    </div>
+                                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">First</th>
+                                                        <th scope="col">Last</th>
+                                                        <th scope="col">Handle</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <th scope="row">1</th>
+                                                        <td>Mark</td>
+                                                        <td>Otto</td>
+                                                        <td>@mdo</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">2</th>
+                                                        <td>Jacob</td>
+                                                        <td>Thornton</td>
+                                                        <td>@fat</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">3</th>
+                                                        <td>Larry</td>
+                                                        <td>the Bird</td>
+                                                        <td>@twitter</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">4</th>
+                                                        <td>Alex</td>
+                                                        <td>Thorn</td>
+                                                        <td>@mdo</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade reviews" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                                        <div class="media">
+                                            <div class="row no-gutter">
+                                                <div class="col-12 col-lg-2 p-0">
+
+                                                    <div class="row no-gutters">
+                                                        <div class="col-12 d-flex  justify-content-center">
+                                                            <img src="img/user.jpg" alt="Generic placeholder image">
+                                                        </div>
+                                                        <div class="col-12 d-flex mt-2 justify-content-center">
+                                                            <ul class="user-rating">
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-12 col-lg-10 p-0">
+                                                    <div class="media-body">
+                                                        <span class="text-center text-lg-left d-block">27 Aug 2017</span>
+                                                        <h5 class="mb-2 text-center text-lg-left">Media heading</h5>
+                                                        <p class="text-center text-lg-left">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="media">
+                                            <div class="row no-gutter">
+                                                <div class="col-12 col-lg-2 p-0">
+
+                                                    <div class="row no-gutters">
+                                                        <div class="col-12 d-flex  justify-content-center">
+                                                            <img src="img/user2.jpg" alt="Generic placeholder image">
+                                                        </div>
+                                                        <div class="col-12 d-flex mt-2 justify-content-center">
+                                                            <ul class="user-rating">
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-12 col-lg-10 p-0">
+                                                    <div class="media-body ">
+                                                        <span class="text-center text-lg-left d-block">27 Aug 2017</span>
+                                                        <h5 class="mb-2 text-center text-lg-left">Media heading</h5>
+                                                        <p class="text-center text-lg-left">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row pl-2 pr-2">
+                                            <div class="col-12 d-flex mb-4 mt-3">
+                                                <h5 class="text-nowrap">Add Review</h5>
+                                                <hr class="w-100 ml-5"/>
+                                            </div>
+                                            <div class="col-12">
+                                                <form class="getin_form border-form" id="register">
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="form-group bottom35">
+                                                                <input type="text" class="form-control"  placeholder="Name*" required="" id="registerName">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="form-group bottom35">
+                                                                <input type="email" class="form-control" placeholder="Email*" required="" id="registerEmail">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-lg-2 text-center text-lg-left">
+                                                            <h5 class="text-nowrap">Your Rating</h5>
+                                                        </div>
+                                                        <div class="col-12 col-lg-10 text-center text-lg-left">
+                                                            <ul class="user-rating">
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <!--                                                                            <label for="comment">Your Rating:</label>-->
+                                                                <textarea class="form-control textareaclass" rows="5" id="comment" placeholder="Your Review"></textarea>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12 mt-3">
+                                                            <div class="form-group d-flex justify-content-center d-lg-block">
+                                                                <button class="text-center btn green-color-yellow-gradient-btn">Add Review</button>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4 mb-4">
+                            <div class="row no-gutters product-all-details">
+
+                                <ul class="col-12 nav nav-tabs" id="myTab" role="tablist">
+                                    <li class="col-4 nav-item">
+                                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="/#home" role="tab" aria-controls="home" aria-selected="true"> Add Reviews</a>
+                                    
+                                </ul>
+                                <div class="col-12 tab-content" id="myTabContent">
+                                    
+                                    <div class="tab-pane fade show active" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                                        <div class="media">
+                                            <div class="row no-gutter">
+                                                <div class="col-12 col-lg-2 p-0">
+
+                                                    <div class="row no-gutters">
+                                                        <div class="col-12 d-flex  justify-content-center">
+                                                            <img src="img/user.jpg" alt="Generic placeholder image">
+                                                        </div>
+                                                        <div class="col-12 d-flex mt-2 justify-content-center">
+                                                            <ul class="user-rating">
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-12 col-lg-10 p-0">
+                                                    <div class="media-body">
+                                                        <span class="text-center text-lg-left d-block">27 Aug 2017</span>
+                                                        <h5 class="mb-2 text-center text-lg-left">Media heading</h5>
+                                                        <p class="text-center text-lg-left">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="media">
+                                            <div class="row no-gutter">
+                                                <div class="col-12 col-lg-2 p-0">
+
+                                                    <div class="row no-gutters">
+                                                        <div class="col-12 d-flex  justify-content-center">
+                                                            <img src="img/user2.jpg" alt="Generic placeholder image">
+                                                        </div>
+                                                        <div class="col-12 d-flex mt-2 justify-content-center">
+                                                            <ul class="user-rating">
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-12 col-lg-10 p-0">
+                                                    <div class="media-body ">
+                                                        <span class="text-center text-lg-left d-block">27 Aug 2017</span>
+                                                        <h5 class="mb-2 text-center text-lg-left">Media heading</h5>
+                                                        <p class="text-center text-lg-left">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row pl-2 pr-2">
+                                            <div class="col-12 d-flex mb-4 mt-3">
+                                                <h5 class="text-nowrap">Add Review</h5>
+                                                <hr class="w-100 ml-5"/>
+                                            </div>
+                                            <div class="col-12">
+                                                <form class="getin_form border-form" id="register">
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="form-group bottom35">
+                                                                <input type="text" class="form-control"  placeholder="Name*" required="" id="registerName">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="form-group bottom35">
+                                                                <input type="email" class="form-control" placeholder="Email*" required="" id="registerEmail">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-lg-2 text-center text-lg-left">
+                                                            <h5 class="text-nowrap">Your Rating</h5>
+                                                        </div>
+                                                        <div class="col-12 col-lg-10 text-center text-lg-left">
+                                                            <ul class="user-rating">
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star-filled"></i></a></li>
+                                                                <li><a href="#"><i class="lni-star"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <!--                                                                            <label for="comment">Your Rating:</label>-->
+                                                                <textarea class="form-control textareaclass" rows="5" id="comment" placeholder="Your Review"></textarea>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12 mt-3">
+                                                            <div class="form-group d-flex justify-content-center d-lg-block">
+                                                                <button class="text-center btn green-color-yellow-gradient-btn">Add Review</button>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--START LATEST ARRIVALS-->
+    <div class="lastest_arrivals">
+        <div class="container">
+            <div class="row"></div>
+                <div class="col-12 mb-4">
+                    <h1>Recommended Books</h1>
+                </div>
+                <div class="col-12">
+                    <div class="lastest_featured_products owl-carousel owl-theme">
+                <%recam.forEach(function name(params) {%>
+                    <%console.log(params)%>"
+                    <div class="lastest_arrival_items item">
+                        <a href="#" class="lastest-addto-cart"><i class="fa fa-shopping-cart"></i></a>
+                        <div class="card">
+                            <span class="product-type">NEW</span>
+                            <div class="image-holder">
+                                <a href="img/l1.jpg"  data-fancybox="lastest_product"  data-title="Shirt Name">
+                                    <img src="<%-params.volumeInfo.imageLinks.thumbnail-%>" class="card-img-top" alt="Lastest Arrivals 1">
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <h5 class="card-title"><%-params.volumeInfo.title-%></h5>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <p class="card-text"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  
+                <% }); %> 
+           
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END LATEST ARRIVALS-->
+
+</div>
+<!-- END HEADING SECTION -->
+
+<!--footer1 sec start-->
+<div class="footer">
+    <div class="container">
+        <div class="row footer-container">
+            <div class="col-sm-12 col-lg-4 f-sec1  text-center text-lg-left">
+           
+             
+        </div>
+        <div class="row">
+            <div class="col-12 footer_notes">
+                <p class="whitecolor text-center w-100 wow fadeInDown">&copy; Virtual Libary <a class="web-link" href="" target="_blank"></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--foo0ter1 sec end-->
+
+<!--START SEARCH AREA-->
+<div class="search-box-overlay">
+    <a><i class="fas fa-times cross-sign" id="close-window"></i></a>
+
+    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--END SEARCH AREA -->
+
+<!--START Cart Box-->
+
+    
+
+
+<!--END Cart Box -->
+
+
+<!-- JavaScript -->
+<script src="/js/bundle.min.js"></script>
+<!-- Plugin Js -->
+<script src="/js/jquery.fancybox.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/swiper.min.js"></script>
+<script src="/js/jquery.cubeportfolio.min.js"></script>
+<script src="/js/wow.min.js"></script>
+<script src="/js/bootstrap-input-spinner.js"></script>
+<script src="/js/parallaxie.min.js"></script>
+<script src="/js/stickyfill.min.js"></script>
+<script src="/js/nouislider.min.js"></script>
+<!-- Custom Script -->
+<script src="/js/script.js"></script>
+</body>
+</html>

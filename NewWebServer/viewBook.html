@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Book</title>
+</head>
+<body>
+<nav>
+    <a href="/home.html">Home</a>
+</nav>
+<h1>Book Information</h1>
+<h4 style="text-align: right;"><a id="loginLink" href="/login.html">Login/Register</a><a id="usernameText">&nbsp;{{UserName}}</a></h4>
+<script>
+    if (localStorage.getItem("username") === null || localStorage.getItem("username") == ""){
+        document.getElementById('loginLink').style.visibility = "visible";
+        document.getElementById('usernameText').style.visibility = "hidden";
+    } else {
+        document.getElementById("usernameText").innerText = localStorage.getItem("username");
+        document.getElementById('loginLink').style.visibility = "hidden";
+        document.getElementById('usernameText').style.visibility = "visible";
+    }
+</script>
+
+<script>
+
+
+
+    const testing = true;
+
+
+
+    function HandleSuccess(type,responseText){
+        var parsed = JSON.parse(responseText);
+        var returnVar = "";
+        if(test.returnCode == '202'){
+            //set up log here too?
+            switch(strtolower(type)){
+                case 'getbook':
+                case 'getrating':
+                case 'getdicussionposts':
+                case 'getreadbook':
+                    returnVar = parsed['data'];
+                    break;
+                case 'setrating':
+                case 'adddiscussionpost':
+                case: 'setreadbook':
+                    break;
+                default:
+                    alert("Error. Please try again.");
+                    //log here
+            }
+        } else {
+            alert("Error. Please try again.");
+            //set up log here
+        }
+        return returnVar;
+    }
+
+
+
+    function sendRequest(type,requestString) {
+        var request = new XMLHttpRequest();
+        request.open("POST","BookLookups.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        request.onreadystatechange= function ()
+        {
+            if ((this.readyState == 4) && (this.status == 200)){
+                return HandleSuccess(type,this.responseText);
+            }
+        }
+        request.send(requestString);
+    }
+
+    function addDiscussionPost(){
+        //discussionPost
+        let discussionText = document.getElementById('discussionPost').value;
+        if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+            alert("Error. You cannot add a discussion post without being logged in!");
+        } else {
+            let username = localStorage.getItem("username");
+            sendRequest('adddiscussionpost','type=adddiscussionpost&username='+username+'&bookID='+bookID+'&post='+discussionText);
+            event_logger('Discussion Post','User has added a post to the disscussion');
+
+        }
+
+    }
+
+    function addRating(){
+        let rating = document.getElementById('rating').value;
+        if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+            alert("Error. You cannot add a rating without being logged in!");
+        } else {
+            let username = localStorage.getItem("username");
+            sendRequest('setrating','type=setrating&username='+username+'&bookID='+bookID+'&rating='+rating);
+            event_logger('Rating','User has left a rating for a book');
+
+        }
+    }
+
+    function setReadBook(){
+        if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+            alert("Error. You cannot set a book as read without being logged in!");
+        } else {
+            let username = localStorage.getItem("username");
+            sendRequest('setreadbook','type=setreadbook&username='+username+'&bookID='+bookID);
+            event_logger('Read book','User added information on book they have read.');
+
+        }
+    }
+
+
+
+
+    function getBookID(name){
+        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+            return decodeURIComponent(name[1]);
+            event_logger('Fetch book ID','System fetched the book ID information');
+
+    }
+
+
+
+    function writeBook(response) {
+
+        var bookID;
+        //send requests for data
+        var obj;
+        var ratObj;
+        var discussionsObj;
+        var readObj;
+        if (testing) {
+            bookID = 209834234;
+            let bookText = '{ "book" : ' +
+                '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+                '"authors":"Jacob Jones, Jones","publisher":"Jones Publishing","PublishDate":"03/16/2023","Categories":["Science Fiction", "Fantasy"],' +
+                '"price": "17.99", "buyLink":"http://www.amazon.com",' +
+                '"pageCount":"207","Language":"English","Description":"This is a description that will hopefully be long enough to make this look kind of big and then maybe go multiple lines and truly test stuff. Yeah."}}';
+
+            let ratingText = '{"rating" : 4.5}';
+            let discussionsText = '{"reviews":[{"username":"imapotato","text":"This book was horrible!"},{"username":"hiya","text":"This book was AMAZING!"},{"username":"IAmNotMe","text":"This book was decent"}]}'
+            let readText = '{"readBool":"true"}'
+            obj = JSON.parse(bookText);
+            ratObj = JSON.parse(ratingText);
+            discussionsObj = JSON.parse(discussionsText);
+            readObj = JSON.parse(readText);
+        } else {
+            readObj = sendRequest('getreadbook','type=getreadbook&username'+username+'&bookID='+bookID).readBool;
+            bookID = getBookID("bookID");
+            if (bookID == null) {
+                alert("Error!.");
+                //log here
+                window.location.replace("/home.html");
+            }
+            if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+                ratObj = null;
+            } else {
+                let username = localStorage.getItem("username");
+                ratObj = sendRequest('getreview', 'type=getreview&username=' + username + '&bookID=' + bookID);
+            }
+            obj = sendRequest('getbook', 'type=getBook&bookID=' + bookID);
+            discussionsObj = sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID);
+        }
+
+
+        readBook = readObj.readBool === 'true';
+        let book = obj.book;
+        let discussions = discussionsObj.reviews;
+        if (discussions == ""){
+        discussions = [];
+    }
+    document.write("<h1>" + book.bookName + "</h1>\n" +
+        "<img src=\""+book.img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
+        "<p>Author(s): "+book.authors+"&nbsp;&nbsp;&nbsp;&nbsp;Publisher: "+book.publisher+" &nbsp;&nbsp;&nbsp;&nbsp;Publish Date:"+book.PublishDate+"</p>\n" +
+        "<p>Categories: "+book.Categories.toString()+" &nbsp;&nbsp;&nbsp;&nbsp;Page Count:"+book.pageCount+" &nbsp;&nbsp;&nbsp;&nbsp;Language: "+book.Language+"</p>\n" +
+        "<p>Description:"+book.Description+"</p>\n" +
+        "<p>Price: "+book.price+" <a href="+book.buyLink+">Buy From Amazon</a></p>");
+
+        if(readBook){
+            document.write("You have read this book!<br><br>");
+        } else {
+            document.write("<input type=\"submit\" value=\"I have read this book\" onclick='setReadBook();'><br><br>");
+        }
+
+        if(ratObj==null){
+            document.write('<br><label for="rating">Rating  </label><select name="rating" id="rating">'+
+                '<option value="0.5">0.5</option>'+
+                '<option value="0.5">1.0</option>'+
+                '<option value="0.5">1.5</option>'+
+                '<option value="0.5">2.0</option>'+
+                '<option value="0.5">2.5</option>'+
+                '<option value="0.5">3.0</option>'+
+                '<option value="3.5">3.5</option>'+
+                '<option value="4.0">4.0</option>'+
+                '<option value="4.5">4.5</option>'+
+                '<option value="5.0">5.0</option></select>'+
+                '<input type="submit" value="Save rating" onclick="addRating()">'+
+            '<br><br><br>');
+        } else {
+            document.write("You rated this book " + ratObj.rating + " out of 5.");
+            document.write('<br>');
+        }
+
+        document.write("<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
+            "    <br>\n" +
+            "\n" +
+            "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
+            "    </textarea>\n" +
+            "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"); //DO A FUNCTION
+
+
+
+        for (let i = 0; i<discussions.length; i++) {
+            document.write('<h5>'+discussions[i].username+'</h5>'+
+            '<br>'+discussions[i].text+'<br><hr />');
+
+        }
+    }
+        writeBook();
+</script>
+</body>
+</html>
