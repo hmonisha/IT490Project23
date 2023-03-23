@@ -148,7 +148,7 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 }
 
 
-function getBook($id){
+function getBook($bookName, $publishedBy, $publishedDate, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link){
 
 	global $dbUser, $dbPass, $serverName, $loginDBName;
 
@@ -158,28 +158,24 @@ function getBook($id){
                 return "";
         }
 
-        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE id = $id";
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE bookname = $bookName";
         $result = $conn->query($sql);
 
     if ($result->num_rows == 1){
-	
-	    $book = $result->fetch_row();
-	    var_dump($book);
 
+        $book = $result->fetch_row();
         $conn->close();
-        $output= "{'bookName':'".$book[0]."','img':'".$book[4]."','authors':'".$book[6]."', 'publisher':'".$book[1]."','PublishDate':'".$book[2]."','Categories':[".$book[11]."],'price':'".$book[12]."','buyLink':'".$book[13]."','pageCount':'".$book[5]."','Language':'".$book[8]."','Description':'".$book[3]."'}";
-	
-	var_dump($output);
-	return $output;
+        return "{'bookName':'".$book['bookname']."','img':'".$book['image']."','authors':'".$book['authors']."', 'publisher':'".$book['publishedBy']."','PublishDate':'".$book['publishedDate']."','Categories':[".$book['category']."],'price':'".$book['price']."','buyLink':'".$book['link']."','pageCount':'".$book['pageCount']."','Language':'".$book['language']."','Description':'".$book['description']."'}";
+
     } elseif($result->num_rows > 1) {
         //error
-	echo "num_rows > 1";
+
         $conn->close();
         return "";
     } else {
 
         $conn->close();
-	echo "less then 1";
+
         return "";
     }
 
@@ -220,7 +216,7 @@ function addDiscussionPost($bookID, $post_content, $post_owner){
 }	
 
 
-function getDiscussionPosts($topic_id){
+function getDiscussionPosts($bookID){
 	
 	global $dbUser, $dbPass, $serverName, $loginDBName;
 
@@ -230,7 +226,7 @@ function getDiscussionPosts($topic_id){
                 return "";
         }
 
-        $sql = "SELECT post_id, topic_id, post_content, post_owner FROM forum_posts WHERE topic_id = $topic_id";
+        $sql = "SELECT post_id, topic_id, post_content, post_date, post_owner FROM forum_posts WHERE post_id = $post_id";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
@@ -301,7 +297,7 @@ global $dbUser, $dbPass, $serverName, $loginDBName;
             return "";
         }
 
-        $stmt = $conn->prepare("INSERT INTO readBook(bookID, username) VALUES (?, ?)");
+        $stmt = $conn->prepare("INSERT INTO bookID, username) VALUES (?, ?)");
         $stmt->bind_param("is", $bookID, $username);
         $stmt->execute();
 
@@ -514,7 +510,7 @@ function requestProcessor($request)
       case 'searchbooks':
           $query = $request['searchQuery'];
           $result = searchBooks($query);
-          if($result == "") {
+          if($result = "") {
             //ERROR
           } else {
             return array("returnCode" => '202', 'books'=> $result);
@@ -522,24 +518,18 @@ function requestProcessor($request)
           break;
       case 'getbook':
           $bookID = $request['bookID'];
-	  $result = getBook($bookID);
-	  echo "\n";
-	  var_dump($result);
-          if($result == "") {
+          $result = getBook($bookID);
+          if($result = "") {
               //ERROR
-	  } else {
-		  echo "              ";
-		  var_dump($result);
-		  $ret=array("returnCode" => '202', 'data'=> " $result");
-		  var_dump($ret);
-		  return $ret;
+          } else {
+              return array("returnCode" => '202', 'data'=> $result);
           }
           break;
       case 'getreadbook':
           $username = $request['username'];
           $bookID = $request['bookID'];
           $result = getReadBook($bookID,$username);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202', 'data'=> $result);
@@ -549,7 +539,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $bookID = $request['bookID'];
           $result = setReadBook($bookID,$username);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202');
@@ -558,7 +548,7 @@ function requestProcessor($request)
       case 'getreadbooks':
           $username = $request['username'];
           $result = getReadBooks($username);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202', 'books'=> $result);
@@ -567,7 +557,7 @@ function requestProcessor($request)
       case 'getdiscussionposts':
           $bookID = $request['bookID'];
           $result = getDiscussionPosts($bookID);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202', 'data'=> $result);
@@ -578,7 +568,7 @@ function requestProcessor($request)
           $bookID = $request['bookID'];
           $postText = $request['post'];
           $result = addDiscussionPost($bookID,$postText,$username);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202');
@@ -588,7 +578,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $bookID = $request['bookID'];
           $result = getReview($bookID,$username);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202', 'data'=> $result);
@@ -599,7 +589,7 @@ function requestProcessor($request)
           $bookID = $request['bookID'];
           $rating = $request['rating'];
           $result = addReview($bookID,$rating,$username);
-          if($result == "") {
+          if($result = "") {
               //ERROR
           } else {
               return array("returnCode" => '202');

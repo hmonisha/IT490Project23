@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Read Books</title>
+
+</head>
+<body>
+<nav>
+    <a href="/home.html">Home</a>
+</nav>
+<h1>Book Site</h1>
+<h4 style="text-align: right;"><a id="loginLink" href="/login.html">Login/Register</a><a id="usernameText">&nbsp;{{UserName}}</a></h4>
+<script>
+    if (localStorage.getItem("username") === null || localStorage.getItem("username") == ""){
+        document.getElementById('loginLink').style.visibility = "visible";
+        document.getElementById('usernameText').style.visibility = "hidden";
+    } else {
+        document.getElementById("usernameText").innerText = localStorage.getItem("username");
+        document.getElementById('loginLink').style.visibility = "hidden";
+        document.getElementById('usernameText').style.visibility = "visible";
+    }
+</script><hr />
+<div id="books"></div>
+<script>
+
+
+
+    var testing = true;
+
+
+
+    function writeBook(bookName, img, authors, publisher, price, buyLink,id){
+        document.getElementById("books").innerHTML += "<h3 href=/viewBook.html?bookId='+"+id+"'>"+ bookName + "</h3>\n" +
+            "<p><img src=" + img + " alt=\"\" width=\"165\" height=\"165\" /></p>\n" +
+            "<p>Author(s): " + authors +"&nbsp;&nbsp;&nbsp;&nbsp; Publisher: " + publisher + "</p>\n" +
+            "<p>Price: " + price +"&nbsp;&nbsp;&nbsp;&nbsp; <a href="+buyLink +"\>Buy From Amazon</a></p>\n" +
+            "<hr />";
+    }
+
+    function HandleBookReturn(response){
+        let respJson = JSON.parse(response);
+        let books = respJson.books;
+        for(let i=0; i<books.length;i++) {
+            writeBook(books[i].bookName,books[i].img,books[i].authors,books[i].publisher,books[i].price,books[i].buyLink,books[i].id);
+        }
+    }
+
+    function sendGetBooks() {
+        if(!testing) {
+            let searchString = document.getElementById("search").value;
+            var request = new XMLHttpRequest();
+            request.open();
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.onreadystatechange = function () {
+                if ((this.readyState == 4) && (this.status == 200)) {
+                    return HandleBookReturn(this.responseText);
+                    event_logger('book info sent','User has requested information');
+
+                }
+            }
+            request.send("type=getreadbooks&username=" + localStorage.getItem("username"));
+        } else {
+            let jsonString = '{ "books" : [' +
+                '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+                '"authors\":"Jacob Jones, Jones","publisher":"Jones Publishing","id":"7623443434",' +
+                '"price": "17.99", "buyLink":"http://www.amazon.com"},{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+                '"authors\":"Jacob Jones, Jones","publisher":"Jones Publishing","id":"7623443234",' +
+                '"price": "17.99", "buyLink":"http://www.amazon.com"},{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+                '"authors\":"Jacob Jones, Jones","publisher":"Jones Publishing","id":"76234412334",' +
+                '"price": "17.99", "buyLink":"http://www.amazon.com"},{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+                '"authors\":"Jacob Jones, Jones","publisher":"Jones Publishing","id":"76234324434",' +
+                '"price": "17.99", "buyLink":"http://www.amazon.com"}]}';
+            HandleBookReturn(jsonString);
+        }
+    }
+    sendGetBooks();
+    //writeBook("It's a book!","https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",
+    //"Jacob Jones, Jones", "Jones Publishing", "$17.99","https://www.amazon.com");
+
+
+</script>
+</body>
+</html>
