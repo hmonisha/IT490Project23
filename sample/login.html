@@ -13,7 +13,7 @@
 
             } else {
                 alert("Login Failed, Username or password incorrect.");
-		event_logger('login failed','Username or password incorrect');
+		
                 //log
             }
 
@@ -34,7 +34,7 @@
 
                 if ((this.readyState == 4)&&(this.status == 200))
                 {
-		    event_logger('user registration','user has been registered');
+		    
                     HandleLoginResponse(this.responseText);
 				
                 }
