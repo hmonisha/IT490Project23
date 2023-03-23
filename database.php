@@ -132,7 +132,7 @@ function addBook($bookName, $publishedBy, $publishedDate, $description, $image, 
 	}
 		var_dump($bookName);
 	$stmt = $conn->prepare("INSERT INTO books (bookName, publishedBy, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link, publishedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	$stmt->bind_param("ssssissssssdss", $bookName, $publishedBy, $description, $image, $pageCount, $authors, $id, $language, $publishedCountry, $printType, $category, $price, $link, $publishedDate);
+	$stmt->bind_param("ssssissssssdss", $bookName, $publishedBy, $description, $image, $pageCount, json_encode($authors), $id, $language, $publishedCountry, $printType, json_encode($category), $price, $link, $publishedDate);
 	$stmt->execute();
 
     $result = $stmt->get_result();
