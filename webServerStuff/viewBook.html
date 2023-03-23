@@ -21,11 +21,82 @@
     }
 </script>
 
+<div id="mainBookInfo"></div>
+<div id="readBook"></div>
+<div id="ratings"></div>
+<div id="discussion"></div>
 <script>
 
+    const testing = false
+
+    function writeBookToScreen(book) {
+        document.getElementById("mainBookInfo").innerHTML = "<h1>" + book.bookName + "</h1>\n" +
+            "<img src=\""+book.img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
+            "<p>Author(s): "+book.authors+"&nbsp;&nbsp;&nbsp;&nbsp;Publisher: "+book.publisher+" &nbsp;&nbsp;&nbsp;&nbsp;Publish Date:"+book.PublishDate+"</p>\n" +
+            "<p>Categories: "+book.Categories.toString()+" &nbsp;&nbsp;&nbsp;&nbsp;Page Count:"+book.pageCount+" &nbsp;&nbsp;&nbsp;&nbsp;Language: "+book.Language+"</p>\n" +
+            "<p>Description:"+book.Description+"</p>\n" +
+            "<p>Price: "+book.price+" <a href="+book.buyLink+">Buy From Amazon</a></p>";
+    }
+
+    function writeRead(readObj) {
+        if(readObj==null) {
+            readBook = false;
+        } else {
+            readBook = readObj.readBool === "true";
+        }
+        if(readBook){
+            document.getElementById("readBook").innerHTML = "You have read this book!<br><br>";
+        } else {
+
+            document.getElementById("readBook").innerHTML = "<input type=\"submit\" value=\"I have read this book\" onclick='setReadBook();'><br><br>";
+        }
+    }
+
+    function writeRating(ratObj){
+        if(JSON.stringify(ratObj)=="{}"){
+            document.getElementById("ratings").innerHTML='<br><label for="rating">Rating  </label><select name="rating" id="rating">'+
+                '<option value="0.5">0.5</option>'+
+                '<option value="0.5">1.0</option>'+
+                '<option value="0.5">1.5</option>'+
+                '<option value="0.5">2.0</option>'+
+                '<option value="0.5">2.5</option>'+
+                '<option value="0.5">3.0</option>'+
+                '<option value="3.5">3.5</option>'+
+                '<option value="4.0">4.0</option>'+
+                '<option value="4.5">4.5</option>'+
+                '<option value="5.0">5.0</option></select>'+
+                '<input type="submit" value="Save rating" onclick="addRating()">'+
+                '<br><br><br>';
+        } else {
+            document.getElementById("ratings").innerHTML="You rated this book " + ratObj.rating + " out of 5."+'<br>';
+        }
+
+    }
+
+    function writeDiscussions(discussionsObj) {
+
+        let discussions = discussionsObj.reviews;
+        if (discussions == "") {
+            discussions = [];
+        }
+
+            document.getElementById("discussion").innerHTML = "<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
+                "    <br>\n" +
+                "\n" +
+                "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
+                "    </textarea>\n" +
+                "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"; //DO A FUNCTION
 
 
-    const testing = false;
+            for (let i = 0; i < discussions.length; i++) {
+                document.getElementById("discussion").innerHTML += '<h5>' + discussions[i].username + '</h5>' +
+                    '<br>' + discussions[i].text + '<br><hr />';
+
+            }
+
+        }
+
+
 
 
 
@@ -47,9 +118,6 @@
                 case 'getrating':
                 case 'getdiscussionposts':
                 case 'getreadbook':
-				    
-				    
-				    
 				    var stuff = parsed.data;
 				    alert("Sending parsed data : "+stuff);
 				    returnVar = JSON.parse(stuff);
@@ -72,7 +140,7 @@
 
 
 
-    function sendRequest(type,requestString) {
+    function sendRequest(type,requestString,callbackFunction) {
         var request = new XMLHttpRequest();
         request.open("POST","BookLookups.php",true);
         request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -82,6 +150,7 @@
 			 //   alert("initial Response : " + this.responseText);
                 var output = HandleSuccess(type,this.responseText);
 			    alert(JSON.stringify(output));
+                callbackFunction(output);
 					    return output;
             }
         }
@@ -148,19 +217,24 @@
         var readObj;
         if (testing) {
             bookID = 209834234;
-            let bookText = '{ "book" : ' +
+            let bookText =
                 '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
                 '"authors":"Jacob Jones, Jones","publisher":"Jones Publishing","PublishDate":"03/16/2023","Categories":["Science Fiction", "Fantasy"],' +
                 '"price": "17.99", "buyLink":"http://www.amazon.com",' +
-                '"pageCount":"207","Language":"English","Description":"This is a description that will hopefully be long enough to make this look kind of big and then maybe go multiple lines and truly test stuff. Yeah."}}';
+                '"pageCount":"207","Language":"English","Description":"This is a description that will hopefully be long enough to make this look kind of big and then maybe go multiple lines and truly test stuff. Yeah."}';
 
-            let ratingText = '{"rating" : 4.5}';
+            let ratingText = '{}';
             let discussionsText = '{"reviews":[{"username":"imapotato","text":"This book was horrible!"},{"username":"hiya","text":"This book was AMAZING!"},{"username":"IAmNotMe","text":"This book was decent"}]}'
-            let readText = '{"readBool":"true"}'
+            let readText = '{"readBool":"false"}'
             obj = JSON.parse(bookText);
             ratObj = JSON.parse(ratingText);
             discussionsObj = JSON.parse(discussionsText);
             readObj = JSON.parse(readText);
+
+            writeBookToScreen(obj);
+            writeRead(readObj);
+            writeRating(ratObj);
+            writeDiscussions(discussionsObj);
         } else {
 			var bookID = getBookID("bookID");
 			if (bookID == null) {
@@ -169,78 +243,28 @@
 			var username = "";
             if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
                 ratObj = null;
+                writeRead(null);
+                writeRating(null);
 		readObj=null;
             } else {
                 username = localStorage.getItem("username");
-			    readObj = sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID);
-                ratObj = sendRequest('getrating', "type=getrating&username="+username+"&bookID="+bookID);
+			    sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID,writeRead);
+                sendRequest('getrating', "type=getrating&username="+username+"&bookID="+bookID,writeRating);
             }
             
-            obj = sendRequest('getbook', 'type=getBook&bookID=' + bookID);
+            sendRequest('getbook', 'type=getBook&bookID=' + bookID,writeBookToScreen);
             alert("OBJ VALUE : " + JSON.stringify(obj));
-			discussionsObj = sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID);
+			sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID,writeDiscussions);
         
 	}
 
-		    if(readObj==null){
-				    readBook = false;
-			    }	    else{
+
+        //let book = obj.book;
 
 
 
-					    readBook = readObj.readBool === "true";
-					    }
-        let book = obj.book;
-        let discussions = discussionsObj.reviews;
-        if (discussions == ""){
-        discussions = [];
-    }
-    document.write("<h1>" + book.bookName + "</h1>\n" +
-        "<img src=\""+book.img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
-        "<p>Author(s): "+book.authors+"&nbsp;&nbsp;&nbsp;&nbsp;Publisher: "+book.publisher+" &nbsp;&nbsp;&nbsp;&nbsp;Publish Date:"+book.PublishDate+"</p>\n" +
-        "<p>Categories: "+book.Categories.toString()+" &nbsp;&nbsp;&nbsp;&nbsp;Page Count:"+book.pageCount+" &nbsp;&nbsp;&nbsp;&nbsp;Language: "+book.Language+"</p>\n" +
-        "<p>Description:"+book.Description+"</p>\n" +
-        "<p>Price: "+book.price+" <a href="+book.buyLink+">Buy From Amazon</a></p>");
-
-        if(readBook){
-            document.write("You have read this book!<br><br>");
-        } else {
-            document.write("<input type=\"submit\" value=\"I have read this book\" onclick='setReadBook();'><br><br>");
-        }
-
-        if(ratObj==null){
-            document.write('<br><label for="rating">Rating  </label><select name="rating" id="rating">'+
-                '<option value="0.5">0.5</option>'+
-                '<option value="0.5">1.0</option>'+
-                '<option value="0.5">1.5</option>'+
-                '<option value="0.5">2.0</option>'+
-                '<option value="0.5">2.5</option>'+
-                '<option value="0.5">3.0</option>'+
-                '<option value="3.5">3.5</option>'+
-                '<option value="4.0">4.0</option>'+
-                '<option value="4.5">4.5</option>'+
-                '<option value="5.0">5.0</option></select>'+
-                '<input type="submit" value="Save rating" onclick="addRating()">'+
-            '<br><br><br>');
-        } else {
-            document.write("You rated this book " + ratObj.rating + " out of 5.");
-            document.write('<br>');
-        }
-
-        document.write("<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
-            "    <br>\n" +
-            "\n" +
-            "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
-            "    </textarea>\n" +
-            "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"); //DO A FUNCTION
 
 
-
-        for (let i = 0; i<discussions.length; i++) {
-            document.write('<h5>'+discussions[i].username+'</h5>'+
-            '<br>'+discussions[i].text+'<br><hr />');
-
-        }
     }
         writeBook();
 </script>
