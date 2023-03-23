@@ -27,7 +27,7 @@
 <div id="discussion"></div>
 <script>
 
-    const testing = false
+    const testing = true;
 
     function writeBookToScreen(book) {
         document.getElementById("mainBookInfo").innerHTML = "<h1>" + book.bookName + "</h1>\n" +
@@ -53,7 +53,7 @@
     }
 
     function writeRating(ratObj){
-        if(JSON.stringify(ratObj)=="{}"){
+        if((JSON.stringify(ratObj)=="{}") || (ratObj == null) ){
             document.getElementById("ratings").innerHTML='<br><label for="rating">Rating  </label><select name="rating" id="rating">'+
                 '<option value="0.5">0.5</option>'+
                 '<option value="0.5">1.0</option>'+
@@ -76,23 +76,21 @@
     function writeDiscussions(discussionsObj) {
 
         let discussions = discussionsObj.reviews;
-        if (discussions == "") {
+        if (discussion == null || discussions == "") {
             discussions = [];
         }
-
             document.getElementById("discussion").innerHTML = "<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
                 "    <br>\n" +
                 "\n" +
                 "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
                 "    </textarea>\n" +
                 "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"; //DO A FUNCTION
-
+		    try{
 
             for (let i = 0; i < discussions.length; i++) {
                 document.getElementById("discussion").innerHTML += '<h5>' + discussions[i].username + '</h5>' +
                     '<br>' + discussions[i].text + '<br><hr />';
-
-            }
+		    }} catch(error){}
 
         }
 
@@ -120,6 +118,7 @@
                 case 'getreadbook':
 				    var stuff = parsed.data;
 				    alert("Sending parsed data : "+stuff);
+				    alert(stuff);
 				    returnVar = JSON.parse(stuff);
 				    alert("Returning : " + JSON.stringify(returnVar));
                     break;
@@ -217,8 +216,8 @@
         var readObj;
         if (testing) {
             bookID = 209834234;
-            let bookText =
-                '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+            let bookText = "{'bookName':'Demigods and Monsters','img':'https://covers.openlibrary.org/b/isbn/9781937856366-L.jpg','authors':'Array', 'publisher':'BenBella Books','PublishDate':'2013-07-02','Categories':[Array],'price':'12.95','buyLink':'https://www.amazon.com/Demigods-Monsters-Favorite-Riordans-Olympians/dp/1937856364/ref=sr_1_1?keywords=Demigods+and+Monsters+paperback&qid=1679366313&sr=8-1','pageCount':'258','Language':'en','Description':'Which Greek god makes the best parent? Would you want to be one of Artemis' Hunters? Why do so many monsters go into retail? Spend a little more time in Percy Jackson's world—a place where the gods bike among us, monsters man snack bars, and each of us has the potential to become a hero. Find out: • Why Dionysus might actually be the best director Camp Half-Blood could have • How to recognize a monster when you see one • Why even if we aren't facing manticores and minotaurs, reading myth can still help us deal with the scary things in our own lives Plus, consult our glossary of people, places, and things from Greek myth: how Medusa got her snake hair extensions, why Chiron isn't into partying and paintball like the rest of his centaur family, and the whole story on Percy's mythical namesake.'}";
+            let temp =    '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
                 '"authors":"Jacob Jones, Jones","publisher":"Jones Publishing","PublishDate":"03/16/2023","Categories":["Science Fiction", "Fantasy"],' +
                 '"price": "17.99", "buyLink":"http://www.amazon.com",' +
                 '"pageCount":"207","Language":"English","Description":"This is a description that will hopefully be long enough to make this look kind of big and then maybe go multiple lines and truly test stuff. Yeah."}';
@@ -243,8 +242,7 @@
 			var username = "";
             if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
                 ratObj = null;
-                writeRead(null);
-                writeRating(null);
+              
 		readObj=null;
             } else {
                 username = localStorage.getItem("username");
@@ -253,7 +251,7 @@
             }
             
             sendRequest('getbook', 'type=getBook&bookID=' + bookID,writeBookToScreen);
-            alert("OBJ VALUE : " + JSON.stringify(obj));
+
 			sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID,writeDiscussions);
         
 	}
