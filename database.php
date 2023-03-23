@@ -167,7 +167,8 @@ function getBook($id){
 	    var_dump($book);
 
         $conn->close();
-        $output= "{'bookName':'".$book[0]."','img':'".$book[4]."','authors':'".$book[6]."', 'publisher':'".$book[1]."','PublishDate':'".$book[2]."','Categories':[".$book[11]."],'price':'".$book[12]."','buyLink':'".$book[13]."','pageCount':'".$book[5]."','Language':'".$book[8]."','Description':'".$book[3]."'}";
+        $output= '{"bookName":"'.$book[0].'","img":"'.$book[4].'","authors":"'.$book[6].'", "publisher":"'.$book[1].'","PublishDate":"'.$book[2].'","Categories":"'.$book[11].'","price":"'.$book[12].'","buyLink":"'.$book[13].'","pageCount":"'.$book[5].'","Language":"'.$book[8].'","Description"'.$book[3].'"}';
+
 	
 	var_dump($output);
 	return $output;
