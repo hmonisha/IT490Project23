@@ -335,8 +335,9 @@ function addReview($bookName, $reviewerName, $rating){
         return "";
         }
 
-        $stmt = $conn->prepare("INSERT INTO book_reviews (id, bookName, reviewerName, reviewDate, rating, review_text) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssiis", $id, $bookName, $reviewerName, $reviewDate, $rating, $review_text);
+
+        $stmt = $conn->prepare("INSERT INTO book_reviews (bookName, reviewerName, rating) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssiis", $id, $bookName, $reviewerName,  $rating);
         $stmt->execute();
 
 
