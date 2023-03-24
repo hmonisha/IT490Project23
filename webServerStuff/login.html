@@ -8,7 +8,7 @@
             response2 = response.substring(2);
             var text = JSON.parse(response2);
             if(text.returnCode == '202'){
-                localStorage.setItem("user",document.getElementById('username'));
+                localStorage.setItem("user",document.getElementById('username').value);
                 window.location.replace("/MainPage.html");
 
             } else {
