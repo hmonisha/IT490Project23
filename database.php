@@ -238,7 +238,7 @@ function getDiscussionPosts($topic_id){
             $posts = '{"reviews":[';
 
                 while($row = $result->fetch_assoc()) {
-                    $posts .= '{"username":'.$row['post_owner'].',"text":"'.$row['post_content'].'"},';
+                    $posts .= '{"username":"'.$row['post_owner'].'","text":"'.$row['post_content'].'"},';
                   }
                   $posts = substr($posts,0,-1);
                 $posts.="]}";
