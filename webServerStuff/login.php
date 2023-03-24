@@ -22,6 +22,7 @@ echo json_encode($response);
 switch ($request["type"])
 {
 	case "login":
+		global $response;
 		$response = "login, yeah we can do that";
         	$rabbitRequest = array();
         	$rabbitRequest['type'] = "Login";
@@ -32,6 +33,7 @@ switch ($request["type"])
         
 	break;
 	case "registration":
+		global $response;
 		$rabbitRequest = array();
 		$rabbitRequest['type'] = "registration";
 		$rabbitRequest['username'] = $request['username'];
