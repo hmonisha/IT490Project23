@@ -9,7 +9,7 @@
             var text = JSON.parse(response2);
             if(text.returnCode == '202'){
                 localStorage.setItem("user",document.getElementById('username').value);
-                window.location.replace("/MainPage.html");
+                window.location.replace("/home.html");
 
             } else {
                 alert("Login Failed, Username or password incorrect.");
