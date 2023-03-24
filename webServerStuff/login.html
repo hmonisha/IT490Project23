@@ -5,9 +5,10 @@
         function HandleLoginResponse(response)
         {
             alert("Running login handle");
-            response = response.substring(2);
             alert(response);
-            var text = JSON.parse(response);
+            response2 = response.substring(2);
+            alert(response2);
+            var text = JSON.parse(response2);
             if(text.returnCode == '202'){
                 localStorage.setItem("user",document.getElementById('username'));
                 window.location.replace("/MainPage.html");
