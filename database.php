@@ -468,7 +468,9 @@ function getReadBooks($username) {
     }
 
     $sql = 'SELECT bookID, username FROM readBook WHERE username = "$username"';
+    echo $sql;
     $result = $conn->query($sql);
+    echo $result->num_rows;
 
     if ($result->num_rows > 0){
         echo "Attempting to return";
@@ -579,6 +581,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $result = getReadBooks($username);
           if($result == "") {
+              echo "Erro with read books";
               //ERROR
           } else {
               return array("returnCode" => '202', 'books'=> $result);
