@@ -335,6 +335,8 @@ function addReview($bookName, $reviewerName, $rating){
         return "";
         }
         $ratingString = intval(floatval($rating)*10);
+        $bookName = strval($bookName);
+        $reviewerName = strval($reviewerName);
 
         $stmt = $conn->prepare("INSERT INTO book_reviews (bookName, reviewerName, rating) VALUES (?, ?, ?)");
         $stmt->bind_param("ssi", $bookName, $reviewerName,  $ratingString);
