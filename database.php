@@ -262,7 +262,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 
-$sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	
+$sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID AND username = $username";
 $result= $conn->query($sql);
 
     if ($result->num_rows == 1){
@@ -303,7 +303,7 @@ global $dbUser, $dbPass, $serverName, $loginDBName;
         }
 
         $stmt = $conn->prepare("INSERT INTO readBook(bookID, username) VALUES (?, ?)");
-        $stmt->bind_param("is", $bookID, $username);
+        $stmt->bind_param("ss", $bookID, $username);
         $stmt->execute();
 
 
@@ -333,7 +333,7 @@ function addReview($bookName, $reviewerName, $rating){
         }
 
         $stmt = $conn->prepare("INSERT INTO book_reviews (id, bookName, reviewerName, reviewDate, rating, review_text) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("issiis", $id, $bookName, $reviewerName, $reviewDate, $rating, $review_text);
+        $stmt->bind_param("sssiis", $id, $bookName, $reviewerName, $reviewDate, $rating, $review_text);
         $stmt->execute();
 
 
@@ -461,14 +461,14 @@ function getReadBooks($username) {
         $returnJson = "[";
 
         while($row = $result->fetch_assoc()) {
-            $returnJson .= getSmallBook($row['bookID']).',';
+            $returnJson .= getSmallBook($row["bookID"]).',';
         }
         $returnJson = substr($returnJson,0,-1);
         $conn->close();
         return $returnJson;
         } else {
             $conn->close();
-            return "'books':''";
+            return '"books":"[]"';
         }
 
 }
