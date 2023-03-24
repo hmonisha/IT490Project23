@@ -262,7 +262,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 try {
-    $sql = "SELECT * FROM readBook WHERE bookID = $bookID AND username = $username";
+    $sql = "SELECT * FROM readBook WHERE bookID = '$bookID' AND username = '$username'";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
@@ -368,7 +368,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
         }
         echo "Getting rating";
 try {
-    $sql = "SELECT * FROM book_reviews WHERE bookName = $bookid AND reviewerName = $reviewerName";
+    $sql = "SELECT * FROM book_reviews WHERE bookName = '$bookid' AND reviewerName = '$reviewerName'";
     echo $sql;
     $result = $conn->query($sql);
     echo $result;
