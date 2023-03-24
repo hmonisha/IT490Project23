@@ -17,7 +17,6 @@ $response = "";
 
 $client = new rabbitMQClient("testRabbitMQ.ini","testServer"); //CHANGE TO CORRECT SERVER!!
 
-echo json_encode($response);
 
 switch ($request["type"])
 {
