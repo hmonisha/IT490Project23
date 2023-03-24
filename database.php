@@ -361,7 +361,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 
-        $sql = "SELECT id, bookName, reviewerName, rating, review_text FROM book_reviews WHERE id = $id";
+        $sql = "SELECT id, bookName, reviewerName, rating, review_text FROM book_reviews WHERE id = $bookid AND reviewerName = $reviewerName";
         $result = $conn->query($sql);
 
         if ($result->num_rows == 1){
@@ -375,12 +375,12 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                         //error
 
             $conn->close();
-                        return "";
+                        return "{}";
                 } else {
 
         $conn->close();
 
-                  return "{}}";
+                  return "{}";
                 }
 
                 $conn->close();
