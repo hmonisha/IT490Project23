@@ -436,14 +436,15 @@ function getSmallBook($bookID) {
                 global $dbUser, $dbPass, $serverName, $loginDBName;
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $searchStmt = $dbConn->prepare("SELECT bookName, image, authors, publishedBy, id FROM books WHERE bookID = :bookID ");
+                $searchStmt = $dbConn->prepare("SELECT bookName, img, authors, publishedBy, id FROM books WHERE bookID = :bookID ");
                 $searchStmt->execute([':bookID' => $bookID]);
                 if ($searchStmt->rowCount() == 1) {
                     foreach($searchStmt->fetch() as $book) {
-                        return '{"bookName":'.$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
+                        return '{"bookName":'.$book['bookName'].",'img':".$book['img'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
                     }
                 } else {
                     //error
+                    echo 'Could not find any books';
                     return '';
                 }
                 return '';
@@ -470,11 +471,14 @@ function getReadBooks($username) {
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0){
+        echo "Attempting to return";
 
         $returnJson = "[";
 
         while($row = $result->fetch_assoc()) {
+            echo "Fetching book";
             $returnJson .= getSmallBook($row["bookID"]).',';
+            echo "made it past the fetch";
         }
         $returnJson = substr($returnJson,0,-1);
         $conn->close();
