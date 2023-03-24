@@ -466,7 +466,7 @@ function getReadBooks($username) {
         return "";
     }
 
-    $sql = "SELECT bookID, username FROM readBook WHERE username = $username";
+    $sql = 'SELECT bookID, username FROM readBook WHERE username = "$username"';
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0){
