@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Book</title>
+</head>
+<body>
+<nav>
+    <a href="/home.html">Home</a>
+</nav>
+<h1>Book Information</h1>
+<h4 style="text-align: right;"><a id="loginLink" href="/login.html">Login/Register</a><a id="usernameText">&nbsp;{{UserName}}</a></h4>
+<script>
+    if (localStorage.getItem("username") === null || localStorage.getItem("username") == ""){
+        document.getElementById('loginLink').style.visibility = "visible";
+        document.getElementById('usernameText').style.visibility = "hidden";
+    } else {
+        document.getElementById("usernameText").innerText = localStorage.getItem("username");
+        document.getElementById('loginLink').style.visibility = "hidden";
+        document.getElementById('usernameText').style.visibility = "visible";
+    }
+</script>
+
+<div id="mainBookInfo"></div>
+<div id="readBook"></div>
+<div id="ratings"></div>
+<div id="discussion"></div>
+<script>
+
+    const testing = false;
+
+    function getBookID(name){
+        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+            return decodeURIComponent(name[1]);
+        // event_logger('Fetch book ID','System fetched the book ID information');
+
+    }
+
+    function writeBookToScreen(bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink){
+        document.getElementById("mainBookInfo").innerHTML = "<h1>" + bookName + "</h1>\n" +
+            "<img src=\""+img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
+            "<p>Author(s): "+authors+"&nbsp;&nbsp;&nbsp;&nbsp;Publisher: "+publisher+" &nbsp;&nbsp;&nbsp;&nbsp;Publish Date:"+publishDate+"</p>\n" +
+            "<p>Categories: "+categories.toString()+" &nbsp;&nbsp;&nbsp;&nbsp;Page Count:"+pageCount+" &nbsp;&nbsp;&nbsp;&nbsp;Language: "+language+"</p>\n" +
+            "<p>Description:"+description+"</p>\n" +
+            "<p>Price: $"+price+" <a href="+buyLink+">Buy From Amazon</a></p>";
+    }
+
+    function writeBook(book) {
+        var bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink;
+        try{
+            bookName = book.bookName;
+            if (bookName == null) {
+                bookName = "";
+            }}catch(error){
+            bookName = "";
+        }
+        try{
+            img = book.img;
+            if (img == null) {
+                img = "";
+            }}catch(error){
+            img = "";
+        }
+        try{
+            authors = book.authors;
+            if (authors == null) {
+                authors = "";
+            }}catch(error){
+            authors = "";
+        }
+        try{
+            publisher = book.publisher;
+            if (publisher == null) {
+                publisher = "";
+            }}catch(error){
+            publisher = "";
+        }
+        try{
+            publishDate = book.PublishDate;
+            if (publishDate == null) {
+                publishDate = "";
+            }}catch(error){
+            publishDate = "";
+        }
+        try{
+            categories = book.Categories;
+            if (categories == null) {
+                categories = "";
+            }}catch(error){
+            categories = "";
+        }
+        try{
+            pageCount = book.pageCount;
+            if (pageCount == null) {
+                pageCount = "";
+            }}catch(error){
+            pageCount = "";
+        }
+        try{
+            language = book.Language;
+            if (language == null) {
+                language = "";
+            }}catch(error){
+            language = "";
+        }
+        try{
+            description = book.Description;
+            if (description == null) {
+                description = "";
+            }}catch(error){
+            description = "";
+        }
+        try{
+            price = book.price;
+            if (price == null) {
+                price = "";
+            }}catch(error){
+            price = "";
+        }
+        try{
+            buyLink = book.buyLink;
+            if (buyLink == null) {
+                buyLink = "";
+            }}catch(error){
+            buyLink = "";
+        }
+        writeBookToScreen(bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink);
+    }
+
+    function writeRead(readObj) {
+        if(readObj==null) {
+            readBook = false;
+        } else {
+            readBook = readObj.readBool === "true";
+        }
+        if(readBook){
+            document.getElementById("readBook").innerHTML = "You have read this book!<br><br>";
+        } else {
+
+            document.getElementById("readBook").innerHTML = "<input type=\"submit\" value=\"I have read this book\" onclick='setReadBook();'><br><br>";
+        }
+    }
+
+    function writeRating(ratObj){
+        if((JSON.stringify(ratObj)=="{}") || (ratObj == null) ){
+            document.getElementById("ratings").innerHTML='<br><label for="rating">Rating  </label><select name="rating" id="rating">'+
+                '<option value="0.5">0.5</option>'+
+                '<option value="0.5">1.0</option>'+
+                '<option value="0.5">1.5</option>'+
+                '<option value="0.5">2.0</option>'+
+                '<option value="0.5">2.5</option>'+
+                '<option value="0.5">3.0</option>'+
+                '<option value="3.5">3.5</option>'+
+                '<option value="4.0">4.0</option>'+
+                '<option value="4.5">4.5</option>'+
+                '<option value="5.0">5.0</option></select>'+
+                '<input type="submit" value="Save rating" onclick="addRating()">'+
+                '<br><br><br>';
+        } else {
+            document.getElementById("ratings").innerHTML="You rated this book " + ratObj.rating + " out of 5."+'<br>';
+        }
+
+    }
+
+    function writeDiscussions(discussionsObj) {
+
+        let discussions = discussionsObj.reviews;
+        if (discussion == null || discussions == "") {
+            discussions = [];
+        }
+        document.getElementById("discussion").innerHTML = "<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
+            "    <br>\n" +
+            "\n" +
+            "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
+            "    </textarea>\n" +
+            "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"; //DO A FUNCTION
+        try{
+
+            for (let i = 0; i < discussions.length; i++) {
+                document.getElementById("discussion").innerHTML += '<h5>' + discussions[i].username + '</h5>' +
+                    '<br>' + discussions[i].text + '<br><hr />';
+            }} catch(error){}
+
+    }
+
+
+
+
+
+    function HandleSuccess(type,responseText){
+
+        if(responseText.includes("Array")) {
+            responseText = responseText.replace("Array","");
+        }
+        if(type.toLowerCase() == 'getbook') {
+            responseText = responseText.replace(" {", "{").replaceAll("Categories", "Category").replaceAll("'s", "").replaceAll("s'", "").replaceAll("Category", "Categories").replaceAll("[", "").replaceAll("]", "");
+        }
+        var parsed = JSON.parse(responseText);
+
+
+        var returnVar = "";
+        if(parsed.returnCode == '202'){
+            //set up log here too?
+            switch(type.toLowerCase()){
+                case 'getbook':
+                case 'getrating':
+                case 'getdiscussionposts':
+                case 'getreadbook':
+                    var stuff = parsed.data;
+                    alert(type);
+                    alert(stuff);
+                    returnVar = JSON.parse(stuff);
+                    break;
+                case 'setrating':
+                case 'adddiscussionpost':
+                case 'setreadbook':
+                    break;
+                default:
+                    alert("Error. Please try again.");
+                //log here
+            }
+        } else {
+            alert("Error. Please try again.");
+            //set up log here
+        }
+        return returnVar;
+    }
+
+    function doNothing(output){}
+
+    function sendRequest(type,requestString,callbackFunction) {
+        var request = new XMLHttpRequest();
+        request.open("POST","BookLookups.php",true);
+        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        request.onreadystatechange= function ()
+        {
+            if ((this.readyState == 4) && (this.status == 200)){
+                //   alert("initial Response : " + this.responseText);
+                var output = HandleSuccess(type,this.responseText);
+                callbackFunction(output);
+                return output;
+            }
+        }
+
+        request.send(requestString);
+    }
+
+    function addDiscussionPost(){
+        //discussionPost
+        let discussionText = document.getElementById('discussionPost').value;
+        if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+            alert("Error. You cannot add a discussion post without being logged in!");
+        } else {
+            let username = localStorage.getItem("username");
+            let bookID = getBookID("bookID");
+            sendRequest('adddiscussionpost','type=adddiscussionpost&username='+username+'&bookID='+bookID+'&post='+discussionText);
+            //event_logger('Discussion Post','User has added a post to the disscussion');
+
+        }
+
+    }
+
+    function addRating(){
+        let rating = document.getElementById('rating').value;
+        if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+            alert("Error. You cannot add a rating without being logged in!");
+        } else {
+            let bookID = getBookID("bookID");
+            let username = localStorage.getItem("username");
+            sendRequest('setrating','type=setrating&username='+username+'&bookID='+bookID+'&rating='+rating,doNothing);
+            //event_logger('Rating','User has left a rating for a book');
+
+        }
+    }
+
+    function setReadBook(){
+        if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+            alert("Error. You cannot set a book as read without being logged in!");
+        } else {
+            let bookID = getBookID("bookID");
+            let username = localStorage.getItem("username");
+            sendRequest('setreadbook','type=setreadbook&username='+username+'&bookID='+bookID);
+            //event_logger('Read book','User added information on book they have read.');
+
+        }
+    }
+
+
+
+
+
+
+
+
+    function writeAll(response) {
+
+        var bookID;
+        //send requests for data
+        var obj;
+        var ratObj;
+        var discussionsObj;
+        var readObj;
+        if (testing) {
+            bookID = 209834234;
+            let bookText = '{' +
+                '"bookName": "Demigods and Monsters",' +
+                '"img": "https://covers.openlibrary.org/b/isbn/9781937856366-L.jpg",' +
+                '"authors": ["Rick Riordan"],' +
+                '"publisher": "BenBella Books",' +
+                '"PublishDate": "2013-07-02",' +
+                '"Categories": ["scifi"],' +
+                '"price": "12.95",' +
+                '"buyLink": "https://www.amazon.com/Demigods-Monsters-Favorite-Riordans-Olympians/dp/1937856364/ref=sr_1_1?keywords=Demigods+and+Monsters+paperback&qid=1679366313&sr=8-1",' +
+                '"pageCount": "258",' +
+                '"Language": "en",' +
+                '"Description": "Which Greek god makes the best parent? Would you want to be one of Artemis\' Hunters? Why do so many monsters go into retail? Spend a little more time in Percy Jackson\'s world—a place where the gods bike among us, monsters man snack bars, and each of us has the potential to become a hero. Find out: • Why Dionysus might actually be the best director Camp Half-Blood could have • How to recognize a monster when you see one • Why even if we aren\'t facing manticores and minotaurs, reading myth can still help us deal with the scary things in our own lives Plus, consult our glossary of people, places, and things from Greek myth: how Medusa got her snake hair extensions, why Chiron isn\'t into partying and paintball like the rest of his centaur family, and the whole story on Percy\'s mythical namesake."' +
+                '}';
+            let temp =    '{"bookName":"this is book", "img":"https://dictionary.cambridge.org/us/images/thumb/book_noun_001_01679.jpg?version=5.0.303",' +
+                '"authors":"Jacob Jones, Jones","publisher":"Jones Publishing","PublishDate":"03/16/2023","Categories":["Science Fiction", "Fantasy"],' +
+                '"price": "17.99", "buyLink":"http://www.amazon.com",' +
+                '"pageCount":"207","Language":"English","Description":"This is a description that will hopefully be long enough to make this look kind of big and then maybe go multiple lines and truly test stuff. Yeah."}';
+
+            let ratingText = '{}';
+            let discussionsText = '{"reviews":[{"username":"imapotato","text":"This book was horrible!"},{"username":"hiya","text":"This book was AMAZING!"},{"username":"IAmNotMe","text":"This book was decent"}]}'
+            let readText = '{"readBool":"false"}'
+            obj = JSON.parse(bookText);
+            ratObj = JSON.parse(ratingText);
+            discussionsObj = JSON.parse(discussionsText);
+            readObj = JSON.parse(readText);
+
+            writeBookToScreen(obj);
+            writeRead(readObj);
+            writeRating(ratObj);
+            writeDiscussions(discussionsObj);
+        } else {
+            var bookID = getBookID("bookID");
+            if (bookID == null) {
+                window.location.replace("/home.html");
+            }
+            var username = "";
+            if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
+                ratObj = null;
+                alert("Empty username field?");
+
+                readObj=null;
+            } else {
+                username = localStorage.getItem("username");
+                alert("Sending requests?");
+                sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID,writeRead);
+                sendRequest('getrating', "type=getrating&username="+username+"&bookID="+bookID,writeRating);
+            }
+
+            sendRequest('getbook', 'type=getBook&bookID=' + bookID,writeBook);
+
+            sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID,writeDiscussions);
+
+        }
+
+
+        //let book = obj.book;
+
+
+
+
+
+    }
+    writeAll();
+</script>
+</body>
+</html>

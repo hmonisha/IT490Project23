@@ -26,6 +26,7 @@ function doLogin($username,$password)
                         $passHash = $loginStmt->fetch()[0];
                         if ($password == $passHash) {
                                 return True;
+
                         }
                         return False;
                 }
@@ -106,7 +107,7 @@ function searchBooks($bookQuery, $firstRun = TRUE) {
     if($result->num_rows >= 10 or !$firstRun) {
         $returnJSON = "[";
         while($row = $result->fetch_array()) {
-            $returnJSON .= "{'bookName':".$row['bookName'].",'img':".$row['image'].",'authors':".$row['authors'].",'publisher':".$row['publishedBy'].",'price':".$row['price'].",''buyLink:".$row['link'].",'id':".$row['ID']."},";
+            $returnJSON .= '{"bookName":"'.$row['bookName'].'","img":"'.$row['image'].'","authors":"'.$row['authors'].'","publisher":"'.$row['publishedBy'].'","price":"'.$row['price'].'","buyLink":"'.$row['link'].'","id":"'.$row['id'].'"},';
         }
         $returnJSON = substr($returnJSON, 0, -1) . "]";
         return $returnJSON;
@@ -158,7 +159,7 @@ function getBook($id){
                 return "";
         }
 
-        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE id = $id";
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE id = $id LIMIT 1";
         $result = $conn->query($sql);
 
     if ($result->num_rows == 1){
@@ -167,7 +168,8 @@ function getBook($id){
 	    var_dump($book);
 
         $conn->close();
-        $output= "{'bookName':'".$book[0]."','img':'".$book[4]."','authors':'".$book[6]."', 'publisher':'".$book[1]."','PublishDate':'".$book[2]."','Categories':[".$book[11]."],'price':'".$book[12]."','buyLink':'".$book[13]."','pageCount':'".$book[5]."','Language':'".$book[8]."','Description':'".$book[3]."'}";
+        $output= '{"bookName":"'.$book[0].'","img":"'.$book[4].'","authors":"'.$book[6].'", "publisher":"'.$book[1].'","PublishDate":"'.$book[2].'","Categories":"'.$book[11].'","price":"'.$book[12].'","buyLink":"'.$book[13].'","pageCount":"'.$book[5].'","Language":"'.$book[8].'","Description":"'.$book[3].'"}';
+
 	
 	var_dump($output);
 	return $output;
@@ -203,8 +205,8 @@ function addDiscussionPost($bookID, $post_content, $post_owner){
         return "";
         }
 
-        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_owner) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisis", $post_id, $bookID, $post_content, $post_owner);
+        $stmt = $conn->prepare("INSERT INTO forum_posts (topic_id, post_content, post_owner) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $bookID, $post_content, $post_owner);
         $stmt->execute();
 
 
@@ -234,9 +236,10 @@ function getDiscussionPosts($topic_id){
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
-            $posts = "{reviews:[{";
+            $posts = '{"reviews":[';
+
                 while($row = $result->fetch_assoc()) {
-                    $posts .= "'username':'".$row['post_owner']."','text':'".$row['post_content']."'},";
+                    $posts .= '{"username":"'.$row['post_owner'].'","text":"'.$row['post_content'].'"},';
                   }
                   $posts = substr($posts,0,-1);
                 $posts.="]}";
@@ -260,25 +263,28 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
         if ($conn->connect_error){
                 return "";
         }
+try {
+    $sql = "SELECT * FROM readBook WHERE bookID = '$bookID' AND username = '$username'";
+    $result = $conn->query($sql);
 
-$sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID";	
-$result= $conn->query($sql);
-
-    if ($result->num_rows == 1){
+    if ($result->num_rows == 1) {
 
         $conn->close();
-        return "{'readBool':'true'}";
-    } elseif($result->num_rows > 1) {
+        return '{"readBool":"true"}';
+    } elseif ($result->num_rows > 1) {
         //error
 
         $conn->close();
-        return "";
+        return '{"readBool":"false"}';
     } else {
 
         $conn->close();
 
-        return "{'readBool':'false'}";
+        return '{"readBool":"false"}';
     }
+} catch(Exception $e) {
+    return '{"readBool":"false"}';
+}
 
 		$conn->close;
 
@@ -302,7 +308,7 @@ global $dbUser, $dbPass, $serverName, $loginDBName;
         }
 
         $stmt = $conn->prepare("INSERT INTO readBook(bookID, username) VALUES (?, ?)");
-        $stmt->bind_param("is", $bookID, $username);
+        $stmt->bind_param("ss", $bookID, $username);
         $stmt->execute();
 
 
@@ -330,9 +336,12 @@ function addReview($bookName, $reviewerName, $rating){
         if ($conn->connect_error){
         return "";
         }
+        $ratingString = intval(floatval($rating)*10);
+        $bookName = strval($bookName);
+        $reviewerName = strval($reviewerName);
 
-        $stmt = $conn->prepare("INSERT INTO book_reviews (id, bookName, reviewerName, reviewDate, rating, review_text) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("issiis", $id, $bookName, $reviewerName, $reviewDate, $rating, $review_text);
+        $stmt = $conn->prepare("INSERT INTO book_reviews (bookName, reviewerName, rating) VALUES (?, ?, ?)");
+        $stmt->bind_param("ssi", $bookName, $reviewerName,  $ratingString);
         $stmt->execute();
 
 
@@ -351,7 +360,7 @@ function addReview($bookName, $reviewerName, $rating){
 
 
 
-function getReview($bookid, $reviewerName, $rating){
+function getReview($bookid, $reviewerName){
 
         global $serverName, $dbUser, $dbPass, $loginDBName;
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
@@ -359,28 +368,34 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
         if ($conn->connect_error){
                 return "";
         }
+        echo "Getting rating";
+try {
+    $sql = "SELECT * FROM book_reviews WHERE bookName = '$bookid' AND reviewerName = '$reviewerName'";
+    $result = $conn->query($sql);
 
-        $sql = "SELECT id, bookName, reviewerName, rating, review_text FROM book_reviews WHERE id = $id";
-        $result = $conn->query($sql);
-
-        if ($result->num_rows == 1){
-                while($row = $result->fetch_assoc()) {
-
-                    $conn->close();
-
-                    return "{'rating':'".$result->fetch_row()['rating']."'}";
-                }
-        } elseif($result->num_rows > 1) {
-                        //error
+    if ($result->num_rows == 1) {
+        while ($row = $result->fetch_assoc()) {
 
             $conn->close();
-                        return "";
-                } else {
+            $rating = intval($row['rating'])/10.0;
+            return '{"rating":"' . $rating . '"}';
+        }
+    } elseif ($result->num_rows > 1) {
+        //error
+
+        $conn->close();
+        return "{}";
+    } else {
 
         $conn->close();
 
-                  return "{}}";
-                }
+        return "{}";
+    }
+} catch(Exception $e) {
+    echo $e->getMessage();
+    echo $e->getTraceAsString();
+    return "{}";
+}
 
                 $conn->close();
 
@@ -396,7 +411,9 @@ function doRegister($username,$passHash)
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $loginStmt = $dbConn->prepare("INSERT INTO userLogin (username, passhash) VALUES (:username, :passhash) ");
-		$loginStmt->execute([':username' => $username, ':passHash' => $passHash]);
+                $loginStmt->bindParam(':username',$username);
+                $loginStmt->bindParam(':passhash',$passHash);
+		        $loginStmt->execute();
                 if ($loginStmt->rowCount() == 1) {
                     return true; 
                 } else {
@@ -422,14 +439,15 @@ function getSmallBook($bookID) {
                 global $dbUser, $dbPass, $serverName, $loginDBName;
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $searchStmt = $dbConn->prepare("SELECT bookName, image, authors, publishedBy, id FROM books WHERE bookID = :bookID ");
+                $searchStmt = $dbConn->prepare("SELECT bookName, image, authors, publishedBy, id FROM books WHERE id = :bookID ");
                 $searchStmt->execute([':bookID' => $bookID]);
                 if ($searchStmt->rowCount() == 1) {
                     foreach($searchStmt->fetch() as $book) {
-                        return "{'bookName':".$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
+                        return '{"bookName":'.$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
                     }
                 } else {
                     //error
+                    echo 'Could not find any books';
                     return '';
                 }
                 return '';
@@ -452,22 +470,27 @@ function getReadBooks($username) {
         return "";
     }
 
-    $sql = "SELECT bookID, username FROM readBook WHERE username = $username";
+    $sql = 'SELECT bookID, username FROM readBook WHERE username = "'.$username.'"';
+    echo $sql;
     $result = $conn->query($sql);
+    echo $result->num_rows;
 
     if ($result->num_rows > 0){
+        echo "Attempting to return";
 
         $returnJson = "[";
 
         while($row = $result->fetch_assoc()) {
-            $returnJson .= getSmallBook($row['bookID']).',';
+            echo "Fetching book";
+            $returnJson .= getBook($row["bookID"]).',';
+            echo "made it past the fetch";
         }
         $returnJson = substr($returnJson,0,-1);
         $conn->close();
         return $returnJson;
         } else {
             $conn->close();
-            return "'books':''";
+            return '"books":"[]"';
         }
 
 }
@@ -514,7 +537,9 @@ function requestProcessor($request)
       case 'searchbooks':
           $query = $request['searchQuery'];
           $result = searchBooks($query);
-          if($result == "") {
+          echo "Got results\n";
+          echo $result;
+          if($result == ""){
             //ERROR
           } else {
             return array("returnCode" => '202', 'books'=> $result);
@@ -559,6 +584,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $result = getReadBooks($username);
           if($result == "") {
+              echo "Erro with read books";
               //ERROR
           } else {
               return array("returnCode" => '202', 'books'=> $result);
@@ -598,7 +624,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $bookID = $request['bookID'];
           $rating = $request['rating'];
-          $result = addReview($bookID,$rating,$username);
+          $result = addReview($bookID,$username,$rating);
           if($result == "") {
               //ERROR
           } else {
