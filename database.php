@@ -440,7 +440,7 @@ function getSmallBook($bookID) {
                 $searchStmt->execute([':bookID' => $bookID]);
                 if ($searchStmt->rowCount() == 1) {
                     foreach($searchStmt->fetch() as $book) {
-                        return '{"bookName":'.$book['bookName'].",'img':".$book['img'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
+                        return '{"bookName":'.$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
                     }
                 } else {
                     //error
@@ -479,7 +479,7 @@ function getReadBooks($username) {
 
         while($row = $result->fetch_assoc()) {
             echo "Fetching book";
-            $returnJson .= getSmallBook($row["bookID"]).',';
+            $returnJson .= getBook($row["bookID"]).',';
             echo "made it past the fetch";
         }
         $returnJson = substr($returnJson,0,-1);
