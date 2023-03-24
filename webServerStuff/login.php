@@ -2,7 +2,6 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-require_once('event_logger.php');
 
 if (!isset($_POST))
 
@@ -30,7 +29,6 @@ switch ($request["type"])
         	$rabbitRequest['username'] = $request['username'];
         	$rabbitRequest['password'] = $request['password'];
         	$rabbitRequest['message'] = "test WILL BE A KEY";
-        	$response = $client->send_request($rabbitRequest);
         
 	break;
 	case "registration":
