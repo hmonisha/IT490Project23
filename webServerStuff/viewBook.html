@@ -223,7 +223,7 @@
         return returnVar;
     }
 
-
+    function doNothing(output){}
 
     function sendRequest(type,requestString,callbackFunction) {
         var request = new XMLHttpRequest();
@@ -263,7 +263,7 @@
         } else {
             let bookID = getBookID("bookID");
             let username = localStorage.getItem("username");
-            sendRequest('setrating','type=setrating&username='+username+'&bookID='+bookID+'&rating='+rating);
+            sendRequest('setrating','type=setrating&username='+username+'&bookID='+bookID+'&rating='+rating,doNothing);
             //event_logger('Rating','User has left a rating for a book');
 
         }

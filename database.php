@@ -610,7 +610,7 @@ function requestProcessor($request)
           $username = $request['username'];
           $bookID = $request['bookID'];
           $rating = $request['rating'];
-          $result = addReview($bookID,$rating,$username);
+          $result = addReview($bookID,$username,$rating);
           if($result == "") {
               //ERROR
           } else {
