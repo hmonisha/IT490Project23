@@ -38,7 +38,7 @@
 
 
     function writeBook(bookName, img, authors, publisher, price, buyLink,id){
-        document.getElementById("books").innerHTML += "<a href=/viewBook.html?bookId="+id+"><h3>"+ bookName + "</h3></a>\n" +
+		           document.getElementById("books").innerHTML += "<a href=/viewBook.html?bookID="+id+"><h3>"+ bookName + "</h3></a>\n" +
             "<p><img src=" + img + " alt=\"\" width=\"165\" height=\"165\" /></p>\n" +
             "<p>Author(s): " + authors +"&nbsp;&nbsp;&nbsp;&nbsp; Publisher: " + publisher + "</p>\n" +
             "<p>Price: $" + price +"&nbsp;&nbsp;&nbsp;&nbsp; <a href="+buyLink +"\>Buy From Amazon</a></p>\n" +
@@ -46,8 +46,14 @@
     }
 
     function HandleBookReturn(response){
-        let respJson = JSON.parse(response);
-        let books = respJson.books;
+		    let respJson = JSON.parse(response);
+		    alert(respJson);
+        let booksJSON = respJson.books;
+		    alert(booksJSON);
+		    let toParse = "["+(booksJSON.replaceAll("'","").replaceAll("[","").replaceAll("]","").replaceAll('""','"').replaceAll('":","','":"","'))+"]";
+		    alert(toParse);
+		    let books = JSON.parse(toParse);
+		    alert(books.length);
         for(let i=0; i<books.length;i++) {
             writeBook(books[i].bookName,books[i].img,books[i].authors,books[i].publisher,books[i].price,books[i].buyLink,books[i].id);
         }
@@ -55,12 +61,15 @@
 
     function sendBookSearch() {
         if(!testing) {
+			alert("Sending request?");
             let searchString = document.getElementById("search").value;
             var request = new XMLHttpRequest();
             request.open("POST","BookLookups.php",true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             request.onreadystatechange = function () {
+			    
                 if ((this.readyState == 4) && (this.status == 200)) {
+				alert(this.responseText);
                     return HandleBookReturn(this.responseText);
                     //log
                     //event_logger('book searched','User searched a book');

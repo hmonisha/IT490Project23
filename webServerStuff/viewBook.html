@@ -27,7 +27,7 @@
 <div id="discussion"></div>
 <script>
 
-    const testing = true;
+    const testing = false;
 
     function writeBookToScreen(book) {
         document.getElementById("mainBookInfo").innerHTML = "<h1>" + book.bookName + "</h1>\n" +
@@ -103,7 +103,7 @@
 		    if(responseText.includes("Array")) {
 				    responseText = responseText.replace("Array","");
 			    }
-		    responseText = responseText.replace(" {","{");
+		    responseText = responseText.replace(" {","{").replaceAll("Categories","Category").replaceAll("'s","").replaceAll("s'","").replaceAll("Category","Categories").replaceAll("[","").replaceAll("]","");
 
 		    var parsed = JSON.parse(responseText);
 		    
