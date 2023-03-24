@@ -31,7 +31,7 @@ switch ($request["type"])
         	$response = $client->send_request($rabbitRequest);
         
 	break;
-	case "register":
+	case "registration":
 		$rabbitRequest = array();
 		$rabbitRequest['type'] = "registration";
 		$rabbitRequest['username'] = $request['username'];
