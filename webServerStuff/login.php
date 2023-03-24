@@ -10,7 +10,7 @@ if (!isset($_POST))
 	exit(0);
 }
 $request = $_POST;
-$response = "unsupported request type, politely FUCK OFF";
+$response = "";
 
 
 
