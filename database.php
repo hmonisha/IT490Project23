@@ -334,10 +334,10 @@ function addReview($bookName, $reviewerName, $rating){
         if ($conn->connect_error){
         return "";
         }
-        $ratingString = strval(intval(floatval($rating)*10));
+        $ratingString = intval(floatval($rating)*10);
 
         $stmt = $conn->prepare("INSERT INTO book_reviews (bookName, reviewerName, rating) VALUES (?, ?, ?)");
-        $stmt->bind_param("sssiis", $bookName, $reviewerName,  $ratingString);
+        $stmt->bind_param("ssi", $bookName, $reviewerName,  $ratingString);
         $stmt->execute();
 
 
