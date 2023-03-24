@@ -376,7 +376,7 @@ try {
 
             $conn->close();
 
-            return '{"rating":"' . $result->fetch_row()['rating'] . '"}';
+            return '{"rating":"' . $row['rating'] . '"}';
         }
     } elseif ($result->num_rows > 1) {
         //error
