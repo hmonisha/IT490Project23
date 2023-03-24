@@ -199,10 +199,7 @@
                 case 'getdiscussionposts':
                 case 'getreadbook':
 				    var stuff = parsed.data;
-				    alert("Sending parsed data : "+stuff);
-				    alert(stuff);
 				    returnVar = JSON.parse(stuff);
-				    alert("Returning : " + JSON.stringify(returnVar));
                     break;
                 case 'setrating':
                 case 'adddiscussionpost':
@@ -230,7 +227,6 @@
             if ((this.readyState == 4) && (this.status == 200)){
 			 //   alert("initial Response : " + this.responseText);
                 var output = HandleSuccess(type,this.responseText);
-			    alert(JSON.stringify(output));
                 callbackFunction(output);
 					    return output;
             }
@@ -336,10 +332,12 @@
 			var username = "";
             if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
                 ratObj = null;
+                alert("Empty username field?");
 
 		readObj=null;
             } else {
                 username = localStorage.getItem("username");
+                alert("Sending requests?");
 			    sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID,writeRead);
                 sendRequest('getrating', "type=getrating&username="+username+"&bookID="+bookID,writeRating);
             }

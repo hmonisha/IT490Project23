@@ -262,7 +262,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 
-$sql = "SELECT * FROM readBook bookID, username WHERE bookID = $bookID AND username = $username";
+$sql = "SELECT * FROM readBook WHERE bookID = $bookID AND username = $username";
 $result= $conn->query($sql);
 
     if ($result->num_rows == 1){
