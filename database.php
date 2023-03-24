@@ -367,7 +367,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 try {
-    $sql = "SELECT * FROM book_reviews WHERE id = $bookid AND reviewerName = $reviewerName";
+    $sql = "SELECT * FROM book_reviews WHERE bookName = $bookid AND reviewerName = $reviewerName";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
