@@ -366,9 +366,12 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
         if ($conn->connect_error){
                 return "";
         }
+        echo "Getting rating";
 try {
     $sql = "SELECT * FROM book_reviews WHERE bookName = $bookid AND reviewerName = $reviewerName";
+    echo $sql;
     $result = $conn->query($sql);
+    echo $result;
 
     if ($result->num_rows == 1) {
         while ($row = $result->fetch_assoc()) {
