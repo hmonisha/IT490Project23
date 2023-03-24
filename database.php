@@ -436,7 +436,7 @@ function getSmallBook($bookID) {
                 global $dbUser, $dbPass, $serverName, $loginDBName;
                 $dbConn = new PDO("mysql:host=$serverName;dbname=$loginDBName", $dbUser, $dbPass);
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $searchStmt = $dbConn->prepare("SELECT bookName, image, authors, publishedBy, id FROM books WHERE bookID = :bookID ");
+                $searchStmt = $dbConn->prepare("SELECT bookName, image, authors, publishedBy, id FROM books WHERE bookName = :bookID ");
                 $searchStmt->execute([':bookID' => $bookID]);
                 if ($searchStmt->rowCount() == 1) {
                     foreach($searchStmt->fetch() as $book) {
