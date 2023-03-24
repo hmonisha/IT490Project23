@@ -106,7 +106,7 @@ function searchBooks($bookQuery, $firstRun = TRUE) {
     if($result->num_rows >= 10 or !$firstRun) {
         $returnJSON = "[";
         while($row = $result->fetch_array()) {
-            $returnJSON .= "{'bookName':".$row['bookName'].",'img':".$row['image'].",'authors':".$row['authors'].",'publisher':".$row['publishedBy'].",'price':".$row['price'].",''buyLink:".$row['link'].",'id':".$row['ID']."},";
+            $returnJSON .= '{"bookName":'.$row['bookName'].',"img":'.$row['image'].',"authors":'.$row['authors'].',"publisher":'.$row['publishedBy'].',"price":'.$row['price'].',"buyLink":'.$row['link'].',"id":'.$row['id'].'},';
         }
         $returnJSON = substr($returnJSON, 0, -1) . "]";
         return $returnJSON;
@@ -235,9 +235,9 @@ function getDiscussionPosts($topic_id){
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
-            $posts = "{reviews:[{";
+            $posts = "{reviews:[";
                 while($row = $result->fetch_assoc()) {
-                    $posts .= "'username':'".$row['post_owner']."','text':'".$row['post_content']."'},";
+                    $posts .= '"{username":'.$row['post_owner'].',"text":"'.$row['post_content'].'"},';
                   }
                   $posts = substr($posts,0,-1);
                 $posts.="]}";
@@ -268,7 +268,7 @@ $result= $conn->query($sql);
     if ($result->num_rows == 1){
 
         $conn->close();
-        return "{'readBool':'true'}";
+        return '{"readBool":"true"}';
     } elseif($result->num_rows > 1) {
         //error
 
@@ -278,7 +278,7 @@ $result= $conn->query($sql);
 
         $conn->close();
 
-        return "{'readBool':'false'}";
+        return '{"readBool":"false"}';
     }
 
 		$conn->close;
@@ -369,7 +369,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
 
                     $conn->close();
 
-                    return "{'rating':'".$result->fetch_row()['rating']."'}";
+                    return '{"rating":"'.$result->fetch_row()['rating'].'"}';
                 }
         } elseif($result->num_rows > 1) {
                         //error
@@ -427,7 +427,7 @@ function getSmallBook($bookID) {
                 $searchStmt->execute([':bookID' => $bookID]);
                 if ($searchStmt->rowCount() == 1) {
                     foreach($searchStmt->fetch() as $book) {
-                        return "{'bookName':".$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
+                        return '{"bookName":'.$book['bookName'].",'img':".$book['image'].",'authors':".$book['authors'].", 'publisher':".$book['publishedBy'].",'id':".$book['id']."}";
                     }
                 } else {
                     //error
@@ -515,7 +515,9 @@ function requestProcessor($request)
       case 'searchbooks':
           $query = $request['searchQuery'];
           $result = searchBooks($query);
-          if($result == "") {
+          echo "Got results\n";
+          echo $result;
+          if($result == ""){
             //ERROR
           } else {
             return array("returnCode" => '202', 'books'=> $result);
