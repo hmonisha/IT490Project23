@@ -106,7 +106,7 @@ function searchBooks($bookQuery, $firstRun = TRUE) {
     if($result->num_rows >= 10 or !$firstRun) {
         $returnJSON = "[";
         while($row = $result->fetch_array()) {
-            $returnJSON .= '{"bookName":'.$row['bookName'].',"img":'.$row['image'].',"authors":'.$row['authors'].',"publisher":'.$row['publishedBy'].',"price":'.$row['price'].',"buyLink":'.$row['link'].',"id":'.$row['id'].'},';
+            $returnJSON .= '{"bookName":"'.$row['bookName'].'","img":"'.$row['image'].'","authors":"'.$row['authors'].'","publisher":"'.$row['publishedBy'].'","price":"'.$row['price'].'","buyLink":"'.$row['link'].'","id":"'.$row['id'].'"},';
         }
         $returnJSON = substr($returnJSON, 0, -1) . "]";
         return $returnJSON;
