@@ -261,15 +261,15 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
         if ($conn->connect_error){
                 return "";
         }
+try {
+    $sql = "SELECT * FROM readBook WHERE bookID = $bookID AND username = $username";
+    $result = $conn->query($sql);
 
-$sql = "SELECT * FROM readBook WHERE bookID = $bookID AND username = $username";
-$result= $conn->query($sql);
-
-    if ($result->num_rows == 1){
+    if ($result->num_rows == 1) {
 
         $conn->close();
         return '{"readBool":"true"}';
-    } elseif($result->num_rows > 1) {
+    } elseif ($result->num_rows > 1) {
         //error
 
         $conn->close();
@@ -280,6 +280,9 @@ $result= $conn->query($sql);
 
         return '{"readBool":"false"}';
     }
+} catch(Exception $e) {
+    return '{"readBool":"false"}';
+}
 
 		$conn->close;
 
@@ -360,28 +363,31 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
         if ($conn->connect_error){
                 return "";
         }
+try {
+    $sql = "SELECT * FROM book_reviews WHERE id = $bookid AND reviewerName = $reviewerName";
+    $result = $conn->query($sql);
 
-        $sql = "SELECT * FROM book_reviews WHERE id = $bookid AND reviewerName = $reviewerName";
-        $result = $conn->query($sql);
-
-        if ($result->num_rows == 1){
-                while($row = $result->fetch_assoc()) {
-
-                    $conn->close();
-
-                    return '{"rating":"'.$result->fetch_row()['rating'].'"}';
-                }
-        } elseif($result->num_rows > 1) {
-                        //error
+    if ($result->num_rows == 1) {
+        while ($row = $result->fetch_assoc()) {
 
             $conn->close();
-                        return "{}";
-                } else {
+
+            return '{"rating":"' . $result->fetch_row()['rating'] . '"}';
+        }
+    } elseif ($result->num_rows > 1) {
+        //error
+
+        $conn->close();
+        return "{}";
+    } else {
 
         $conn->close();
 
-                  return "{}";
-                }
+        return "{}";
+    }
+} catch(Exception $e) {
+    return "{}";
+}
 
                 $conn->close();
 
