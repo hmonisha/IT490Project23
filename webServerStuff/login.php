@@ -2,6 +2,8 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('event_logger.php');
+
 if (!isset($_POST))
 
 {
@@ -21,6 +23,7 @@ $client = new rabbitMQClient("testRabbitMQ.ini","testServer"); //CHANGE TO CORRE
 switch ($request["type"])
 {
 	case "login":
+		event_logger('error', 'Something went wrong!');
 		$response = "login, yeah we can do that";
         	$rabbitRequest = array();
         	$rabbitRequest['type'] = "Login";
