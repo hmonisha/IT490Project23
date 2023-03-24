@@ -235,7 +235,8 @@ function getDiscussionPosts($topic_id){
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0){
-            $posts = "{reviews:[";
+            $posts = '{"reviews":[';
+
                 while($row = $result->fetch_assoc()) {
                     $posts .= '"{username":'.$row['post_owner'].',"text":"'.$row['post_content'].'"},';
                   }

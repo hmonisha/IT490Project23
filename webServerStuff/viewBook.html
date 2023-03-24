@@ -192,8 +192,9 @@
         if(responseText.includes("Array")) {
             responseText = responseText.replace("Array","");
         }
-        responseText = responseText.replace(" {","{").replaceAll("Categories","Category").replaceAll("'s","").replaceAll("s'","").replaceAll("Category","Categories").replaceAll("[","").replaceAll("]","");
-
+        if(type.toLowerCase() == 'getbook') {
+            responseText = responseText.replace(" {", "{").replaceAll("Categories", "Category").replaceAll("'s", "").replaceAll("s'", "").replaceAll("Category", "Categories").replaceAll("[", "").replaceAll("]", "");
+        }
         var parsed = JSON.parse(responseText);
 
 
