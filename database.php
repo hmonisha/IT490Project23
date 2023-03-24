@@ -392,6 +392,8 @@ try {
         return "{}";
     }
 } catch(Exception $e) {
+    echo $e->getMessage();
+    echo $e->getTraceAsString();
     return "{}";
 }
 
