@@ -158,7 +158,7 @@ function getBook($id){
                 return "";
         }
 
-        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE id = $id";
+        $sql = "SELECT bookname, publishedBy, publishedDate, description, image, pageCount, authors, id, language, publishedCountry, printType, category, price, link FROM books WHERE id = $id LIMIT 1";
         $result = $conn->query($sql);
 
     if ($result->num_rows == 1){
