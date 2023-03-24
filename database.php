@@ -4,6 +4,7 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('event_logger.php');
 
 ///Extract this information out
 $dbUser = "admin";
@@ -26,6 +27,8 @@ function doLogin($username,$password)
                         $passHash = $loginStmt->fetch()[0];
                         if ($password == $passHash) {
                                 return True;
+				event_logger('error', 'Something went wrong!');
+
                         }
                         return False;
                 }
