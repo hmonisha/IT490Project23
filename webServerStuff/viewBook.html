@@ -249,6 +249,7 @@
             alert("Error. You cannot add a discussion post without being logged in!");
         } else {
             let username = localStorage.getItem("username");
+            let bookID = getBookID("bookID");
             sendRequest('adddiscussionpost','type=adddiscussionpost&username='+username+'&bookID='+bookID+'&post='+discussionText);
             //event_logger('Discussion Post','User has added a post to the disscussion');
 
