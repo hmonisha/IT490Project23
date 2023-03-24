@@ -29,13 +29,95 @@
 
     const testing = false;
 
-    function writeBookToScreen(book) {
-        document.getElementById("mainBookInfo").innerHTML = "<h1>" + book.bookName + "</h1>\n" +
-            "<img src=\""+book.img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
-            "<p>Author(s): "+book.authors+"&nbsp;&nbsp;&nbsp;&nbsp;Publisher: "+book.publisher+" &nbsp;&nbsp;&nbsp;&nbsp;Publish Date:"+book.PublishDate+"</p>\n" +
-            "<p>Categories: "+book.Categories.toString()+" &nbsp;&nbsp;&nbsp;&nbsp;Page Count:"+book.pageCount+" &nbsp;&nbsp;&nbsp;&nbsp;Language: "+book.Language+"</p>\n" +
-            "<p>Description:"+book.Description+"</p>\n" +
-            "<p>Price: "+book.price+" <a href="+book.buyLink+">Buy From Amazon</a></p>";
+    function writeBookToScreen(bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink){
+        document.getElementById("mainBookInfo").innerHTML = "<h1>" + bookName + "</h1>\n" +
+            "<img src=\""+img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
+            "<p>Author(s): "+authors+"&nbsp;&nbsp;&nbsp;&nbsp;Publisher: "+publisher+" &nbsp;&nbsp;&nbsp;&nbsp;Publish Date:"+publishDate+"</p>\n" +
+            "<p>Categories: "+categories.toString()+" &nbsp;&nbsp;&nbsp;&nbsp;Page Count:"+pageCount+" &nbsp;&nbsp;&nbsp;&nbsp;Language: "+language+"</p>\n" +
+            "<p>Description:"+Description+"</p>\n" +
+            "<p>Price: $"+price+" <a href="+buyLink+">Buy From Amazon</a></p>";
+    }
+
+    function writeBook(book) {
+        var bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink;
+        try{
+            bookName = book.bookName;
+            if (bookName == null) {
+                bookName = "";
+            }}catch(error){
+            bookName = "";
+        }
+        try{
+            img = book.img;
+            if (img == null) {
+                img = "";
+            }}catch(error){
+            img = "";
+        }
+        try{
+            authors = book.authors;
+            if (authors == null) {
+                authors = "";
+            }}catch(error){
+            authors = "";
+        }
+        try{
+            publisher = book.publisher;
+            if (publisher == null) {
+                publisher = "";
+            }}catch(error){
+            publisher = "";
+        }
+        try{
+            publishDate = book.PublishDate;
+            if (publishDate == null) {
+                publishDate = "";
+            }}catch(error){
+            publishDate = "";
+        }
+        try{
+            categories = book.Categories;
+            if (categories == null) {
+                categories = "";
+            }}catch(error){
+            categories = "";
+        }
+        try{
+            pageCount = book.pageCount;
+            if (pageCount == null) {
+                pageCount = "";
+            }}catch(error){
+            pageCount = "";
+        }
+        try{
+            language = book.Language;
+            if (language == null) {
+                language = "";
+            }}catch(error){
+            language = "";
+        }
+        try{
+            description = book.Description;
+            if (description == null) {
+                description = "";
+            }}catch(error){
+            description = "";
+        }
+        try{
+            price = book.price;
+            if (price == null) {
+                price = "";
+            }}catch(error){
+            price = "";
+        }
+        try{
+            buyLink = book.buyLink;
+            if (buyLink == null) {
+                buyLink = "";
+            }}catch(error){
+            buyLink = "";
+        }
+        writeBookToScreen(bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink);
     }
 
     function writeRead(readObj) {
@@ -99,15 +181,15 @@
 
 
     function HandleSuccess(type,responseText){
-		    
+
 		    if(responseText.includes("Array")) {
 				    responseText = responseText.replace("Array","");
 			    }
 		    responseText = responseText.replace(" {","{").replaceAll("Categories","Category").replaceAll("'s","").replaceAll("s'","").replaceAll("Category","Categories").replaceAll("[","").replaceAll("]","");
 
 		    var parsed = JSON.parse(responseText);
-		    
-		    
+
+
         var returnVar = "";
         if(parsed.returnCode == '202'){
             //set up log here too?
@@ -153,7 +235,7 @@
 					    return output;
             }
         }
-		    
+
         request.send(requestString);
     }
 
@@ -206,7 +288,7 @@
 
 
 
-    function writeBook(response) {
+    function writeAll(response) {
 
         var bookID;
         //send requests for data
@@ -254,18 +336,18 @@
 			var username = "";
             if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
                 ratObj = null;
-              
+
 		readObj=null;
             } else {
                 username = localStorage.getItem("username");
 			    sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID,writeRead);
                 sendRequest('getrating', "type=getrating&username="+username+"&bookID="+bookID,writeRating);
             }
-            
-            sendRequest('getbook', 'type=getBook&bookID=' + bookID,writeBookToScreen);
+
+            sendRequest('getbook', 'type=getBook&bookID=' + bookID,writeBook);
 
 			sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID,writeDiscussions);
-        
+
 	}
 
 
@@ -276,7 +358,7 @@
 
 
     }
-        writeBook();
+        writeAll();
 </script>
 </body>
 </html>
