@@ -352,7 +352,7 @@ function addReview($bookName, $reviewerName, $rating){
 
 
 
-function getReview($bookid, $reviewerName, $rating){
+function getReview($bookid, $reviewerName){
 
         global $serverName, $dbUser, $dbPass, $loginDBName;
 $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
