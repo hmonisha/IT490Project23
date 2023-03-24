@@ -5,6 +5,7 @@
         function HandleLoginResponse(response)
         {
             alert("Running login handle");
+            response = response.substring(2);
             alert(response);
             var text = JSON.parse(response);
             if(text.returnCode == '202'){

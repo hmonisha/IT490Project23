@@ -40,7 +40,7 @@ switch ($request["type"])
 		$response = $client->send_request($rabbitRequest);
 		break;
 }
-echo json_encode(substr($response,2));
+echo json_encode($response);
 exit(0);
 
 
