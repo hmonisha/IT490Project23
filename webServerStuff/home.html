@@ -47,13 +47,10 @@
 
     function HandleBookReturn(response){
 		    let respJson = JSON.parse(response);
-		    alert(respJson);
         let booksJSON = respJson.books;
 		    alert(booksJSON);
 		    let toParse = "["+(booksJSON.replaceAll("'","").replaceAll("[","").replaceAll("]","").replaceAll('""','"').replaceAll('":","','":"","'))+"]";
-		    alert(toParse);
 		    let books = JSON.parse(toParse);
-		    alert(books.length);
         for(let i=0; i<books.length;i++) {
             writeBook(books[i].bookName,books[i].img,books[i].authors,books[i].publisher,books[i].price,books[i].buyLink,books[i].id);
         }

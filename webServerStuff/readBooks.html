@@ -32,16 +32,19 @@
 
 
     function writeBook(bookName, img, authors, publisher, price, buyLink,id){
-        document.getElementById("books").innerHTML += "<h3 href=/viewBook.html?bookId='+"+id+"'>"+ bookName + "</h3>\n" +
+        document.getElementById("books").innerHTML += "<a href=/viewBook.html?bookID="+id+"><h3>"+ bookName + "</h3></a>\n" +
             "<p><img src=" + img + " alt=\"\" width=\"165\" height=\"165\" /></p>\n" +
             "<p>Author(s): " + authors +"&nbsp;&nbsp;&nbsp;&nbsp; Publisher: " + publisher + "</p>\n" +
-            "<p>Price: " + price +"&nbsp;&nbsp;&nbsp;&nbsp; <a href="+buyLink +"\>Buy From Amazon</a></p>\n" +
+            "<p>Price: $" + price +"&nbsp;&nbsp;&nbsp;&nbsp; <a href="+buyLink +"\>Buy From Amazon</a></p>\n" +
             "<hr />";
     }
 
     function HandleBookReturn(response){
-        //let respJson = JSON.parse(response);
-        let books = response["books"];
+        let respJson = JSON.parse(response);
+        let booksJSON = respJson.books;
+        alert(booksJSON);
+        let toParse = "["+(booksJSON.replaceAll("'","").replaceAll("[","").replaceAll("]","").replaceAll('""','"').replaceAll('":","','":"","'))+"]";
+        let books = JSON.parse(toParse);
         for(let i=0; i<books.length;i++) {
             writeBook(books[i].bookName,books[i].img,books[i].authors,books[i].publisher,books[i].price,books[i].buyLink,books[i].id);
         }
