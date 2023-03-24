@@ -29,6 +29,13 @@
 
     const testing = false;
 
+    function getBookID(name){
+        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+            return decodeURIComponent(name[1]);
+        // event_logger('Fetch book ID','System fetched the book ID information');
+
+    }
+
     function writeBookToScreen(bookName, img, authors, publisher, publishDate, categories, pageCount, language, description, price, buyLink){
         document.getElementById("mainBookInfo").innerHTML = "<h1>" + bookName + "</h1>\n" +
             "<img src=\""+img+"\" alt=\"\" width=\"165\" height=\"165\" />\n" +
@@ -161,20 +168,20 @@
         if (discussion == null || discussions == "") {
             discussions = [];
         }
-            document.getElementById("discussion").innerHTML = "<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
-                "    <br>\n" +
-                "\n" +
-                "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
-                "    </textarea>\n" +
-                "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"; //DO A FUNCTION
-		    try{
+        document.getElementById("discussion").innerHTML = "<label for=\"discussionPost\">Add Discussion Post:</label>\n" +
+            "    <br>\n" +
+            "\n" +
+            "    <textarea id=\"discussionPost\" name=\"discussionPost\" rows=\"4\" cols=\"50\">\n" +
+            "    </textarea>\n" +
+            "    <input type=\"submit\" value=\"Submit Post\" onclick='addDiscussionPost()'>"; //DO A FUNCTION
+        try{
 
             for (let i = 0; i < discussions.length; i++) {
                 document.getElementById("discussion").innerHTML += '<h5>' + discussions[i].username + '</h5>' +
                     '<br>' + discussions[i].text + '<br><hr />';
-		    }} catch(error){}
+            }} catch(error){}
 
-        }
+    }
 
 
 
@@ -182,12 +189,12 @@
 
     function HandleSuccess(type,responseText){
 
-		    if(responseText.includes("Array")) {
-				    responseText = responseText.replace("Array","");
-			    }
-		    responseText = responseText.replace(" {","{").replaceAll("Categories","Category").replaceAll("'s","").replaceAll("s'","").replaceAll("Category","Categories").replaceAll("[","").replaceAll("]","");
+        if(responseText.includes("Array")) {
+            responseText = responseText.replace("Array","");
+        }
+        responseText = responseText.replace(" {","{").replaceAll("Categories","Category").replaceAll("'s","").replaceAll("s'","").replaceAll("Category","Categories").replaceAll("[","").replaceAll("]","");
 
-		    var parsed = JSON.parse(responseText);
+        var parsed = JSON.parse(responseText);
 
 
         var returnVar = "";
@@ -198,8 +205,8 @@
                 case 'getrating':
                 case 'getdiscussionposts':
                 case 'getreadbook':
-				    var stuff = parsed.data;
-				    returnVar = JSON.parse(stuff);
+                    var stuff = parsed.data;
+                    returnVar = JSON.parse(stuff);
                     break;
                 case 'setrating':
                 case 'adddiscussionpost':
@@ -207,7 +214,7 @@
                     break;
                 default:
                     alert("Error. Please try again.");
-                    //log here
+                //log here
             }
         } else {
             alert("Error. Please try again.");
@@ -225,10 +232,10 @@
         request.onreadystatechange= function ()
         {
             if ((this.readyState == 4) && (this.status == 200)){
-			 //   alert("initial Response : " + this.responseText);
+                //   alert("initial Response : " + this.responseText);
                 var output = HandleSuccess(type,this.responseText);
                 callbackFunction(output);
-					    return output;
+                return output;
             }
         }
 
@@ -254,6 +261,7 @@
         if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
             alert("Error. You cannot add a rating without being logged in!");
         } else {
+            let bookID = getBookID("bookID");
             let username = localStorage.getItem("username");
             sendRequest('setrating','type=setrating&username='+username+'&bookID='+bookID+'&rating='+rating);
             //event_logger('Rating','User has left a rating for a book');
@@ -265,6 +273,7 @@
         if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
             alert("Error. You cannot set a book as read without being logged in!");
         } else {
+            let bookID = getBookID("bookID");
             let username = localStorage.getItem("username");
             sendRequest('setreadbook','type=setreadbook&username='+username+'&bookID='+bookID);
             //event_logger('Read book','User added information on book they have read.');
@@ -275,12 +284,7 @@
 
 
 
-    function getBookID(name){
-        if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
-            return decodeURIComponent(name[1]);
-           // event_logger('Fetch book ID','System fetched the book ID information');
 
-    }
 
 
 
@@ -325,28 +329,28 @@
             writeRating(ratObj);
             writeDiscussions(discussionsObj);
         } else {
-			var bookID = getBookID("bookID");
-			if (bookID == null) {
-					window.location.replace("/home.html");
-				}
-			var username = "";
+            var bookID = getBookID("bookID");
+            if (bookID == null) {
+                window.location.replace("/home.html");
+            }
+            var username = "";
             if (localStorage.getItem("username") === null || localStorage.getItem("username") == "") {
                 ratObj = null;
                 alert("Empty username field?");
 
-		readObj=null;
+                readObj=null;
             } else {
                 username = localStorage.getItem("username");
                 alert("Sending requests?");
-			    sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID,writeRead);
+                sendRequest('getreadbook','type=getreadbook&username='+username+'&bookID='+bookID,writeRead);
                 sendRequest('getrating', "type=getrating&username="+username+"&bookID="+bookID,writeRating);
             }
 
             sendRequest('getbook', 'type=getBook&bookID=' + bookID,writeBook);
 
-			sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID,writeDiscussions);
+            sendRequest('getdiscussionposts','type=getdiscussionposts&bookID='+bookID,writeDiscussions);
 
-	}
+        }
 
 
         //let book = obj.book;
@@ -356,7 +360,7 @@
 
 
     }
-        writeAll();
+    writeAll();
 </script>
 </body>
 </html>
