@@ -204,8 +204,8 @@ function addDiscussionPost($bookID, $post_content, $post_owner){
         return "";
         }
 
-        $stmt = $conn->prepare("INSERT INTO forum_posts (post_id, topic_id, post_content, post_owner) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisis", $post_id, $bookID, $post_content, $post_owner);
+        $stmt = $conn->prepare("INSERT INTO forum_posts (topic_id, post_content, post_owner) VALUES (?, ?, ?)");
+        $stmt->bind_param("iisis", $bookID, $post_content, $post_owner);
         $stmt->execute();
 
 
