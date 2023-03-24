@@ -376,8 +376,8 @@ try {
         while ($row = $result->fetch_assoc()) {
 
             $conn->close();
-
-            return '{"rating":"' . $row['rating'] . '"}';
+            $rating = intval($row['rating'])/10.0;
+            return '{"rating":"' . $rating . '"}';
         }
     } elseif ($result->num_rows > 1) {
         //error
