@@ -273,7 +273,7 @@ $result= $conn->query($sql);
         //error
 
         $conn->close();
-        return "";
+        return '{"readBool":"false"}';
     } else {
 
         $conn->close();
@@ -361,7 +361,7 @@ $conn = new mysqli($serverName, $dbUser, $dbPass, $loginDBName);
                 return "";
         }
 
-        $sql = "SELECT id, bookName, reviewerName, rating, review_text FROM book_reviews WHERE id = $bookid AND reviewerName = $reviewerName";
+        $sql = "SELECT * FROM book_reviews WHERE id = $bookid AND reviewerName = $reviewerName";
         $result = $conn->query($sql);
 
         if ($result->num_rows == 1){
