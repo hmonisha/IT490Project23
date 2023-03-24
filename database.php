@@ -411,7 +411,7 @@ function doRegister($username,$passHash)
                 $dbConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $loginStmt = $dbConn->prepare("INSERT INTO userLogin (username, passhash) VALUES (:username, :passhash) ");
                 $loginStmt->bindParam(':username',$username);
-                $loginStmt->bindParam(':passhas',$passHash);
+                $loginStmt->bindParam(':passhash',$passHash);
 		        $loginStmt->execute();
                 if ($loginStmt->rowCount() == 1) {
                     return true; 
